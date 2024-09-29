@@ -80,7 +80,7 @@ namespace RPS::IO
 
             try
             {
-                return static_cast<T>(std::stod(input));
+                return std::stod(input);
             }
             catch (const std::invalid_argument &)
             {
