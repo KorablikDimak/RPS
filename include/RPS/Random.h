@@ -6,7 +6,7 @@
 
 namespace RPS::Random
 {
-    template<typename TReal = double>
+    template<typename TReal>
     TReal RandomReal(const TReal min, const TReal max) noexcept
     {
         std::random_device device;
@@ -16,7 +16,7 @@ namespace RPS::Random
         return distribution(generator);
     }
 
-    template<typename TInteger = int>
+    template<typename TInteger>
     TInteger RandomInt(const TInteger min, const TInteger max) noexcept
     {
         std::random_device device;
