@@ -1,17 +1,13 @@
-#ifndef RPS_IO_H
-#define RPS_IO_H
+#ifndef RPS_IO_ConsoleReader_H
+#define RPS_IO_ConsoleReader_H
 
 #include <iostream>
 
-#include "IO/FileReader.h"
-#include "IO/RandomReader.h"
-#include "IO/FileWriter.h"
-
-namespace RPS::IO
+namespace RPS::IO::Console
 {
-    template<typename T>
-    requires std::same_as<unsigned int, T>
-    T Get() noexcept
+    template<typename TSource>
+    requires std::same_as<unsigned int, TSource>
+    TSource Read() noexcept
     {
         while (true)
         {
@@ -26,7 +22,7 @@ namespace RPS::IO
                     std::cout << "Некорректный ввод" << std::endl;
                     continue;
                 }
-                return static_cast<T>(number);
+                return static_cast<unsigned int>(number);
             }
             catch (const std::invalid_argument &)
             {
@@ -39,9 +35,9 @@ namespace RPS::IO
         }
     }
 
-    template<typename T>
-    requires std::same_as<std::size_t, T>
-    T Get() noexcept
+    template<typename TSource>
+    requires std::same_as<std::size_t, TSource>
+    TSource Read() noexcept
     {
         while (true)
         {
@@ -56,7 +52,7 @@ namespace RPS::IO
                     std::cout << "Некорректный ввод" << std::endl;
                     continue;
                 }
-                return static_cast<T>(number);
+                return static_cast<std::size_t>(number);
             }
             catch (const std::invalid_argument &)
             {
@@ -69,9 +65,9 @@ namespace RPS::IO
         }
     }
 
-    template<typename T>
-    requires std::same_as<double, T>
-    T Get() noexcept
+    template<typename TSource>
+    requires std::same_as<double, TSource>
+    TSource Read() noexcept
     {
         while (true)
         {
@@ -93,16 +89,18 @@ namespace RPS::IO
         }
     }
 
-    inline std::string GetFilePath() noexcept
+    template<typename TSource>
+    std::vector<TSource> Read(std::size_t elementsCount) noexcept
     {
-        while (true)
+        std::vector<TSource> array(elementsCount);
+
+        for (std::size_t i = 0; i < elementsCount; ++i)
         {
-            std::string filePath;
-            std::getline(std::cin, filePath);
-            if (exists(std::filesystem::path(filePath)))
-                return filePath;
-            std::cout << "Данный файл не существует." << std::endl;
+            std::cout << "Введите " << i << " элемент:" << std::endl;
+            array[i] = Read<TSource>();
         }
+
+        return array;
     }
 }
 

@@ -7,15 +7,11 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(INCLUDES
-        include/RPS/IO.h
         include/RPS/Sort.h
         include/RPS/Random.h
         include/RPS/Concepts.h
-        include/RPS/IO/IReader.h
-        include/RPS/IO/IWriter.h
-        include/RPS/IO/FileReader.h
-        include/RPS/IO/FileWriter.h
-        include/RPS/IO/RandomReader.h)
+        include/RPS/IO/File.h
+        include/RPS/IO/Console.h)
 
 set(SOURCE
         src/main.cpp)
