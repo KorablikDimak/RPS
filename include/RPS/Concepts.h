@@ -30,7 +30,6 @@ namespace RPS::Concepts
     concept RandomAccess = requires(TCollection value)
     {
         value[std::declval<std::size_t>()];
-        typename std::decay_t<TCollection>::value_type;
     };
 }
 
