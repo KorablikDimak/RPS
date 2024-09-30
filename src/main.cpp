@@ -77,7 +77,8 @@ int main()
 
         while (true)
         {
-            std::cout << "Выберете 1 чтобы сохранить отсортированный массив в файл "
+            std::cout << "Выберете 1 чтобы сохранить отсортированный массив в файл, "
+                         "2 чтобы повторить работу программы "
                          "или любые другие символы чтобы завершить программу" << std::endl;
             const auto choice = IO::Console::Read<unsigned int>();
 
@@ -91,13 +92,29 @@ int main()
                 {
                     IO::File::Write(filePath, array);
                     std::cout << "Файл сохранен." << std::endl;
-                    return EXIT_SUCCESS;
                 }
                 catch (const std::runtime_error& ex)
                 {
                     std::cout << ex.what() << std::endl;
                     continue;
                 }
+
+                std::cout << "Выберете 1 чтобы повторить работу программы "
+                             "или любые другие символы чтобы завершить программу" << std::endl;
+                const auto quitChoice = IO::Console::Read<unsigned int>();
+
+                if (quitChoice == 1)
+                {
+                    break;
+                }
+                else
+                {
+                    return EXIT_SUCCESS;
+                }
+            }
+            else if (choice == 2)
+            {
+                break;
             }
             else
             {
