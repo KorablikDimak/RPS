@@ -10,8 +10,9 @@
 
 namespace RPS::IO::File
 {
-    template<typename TSource>
-    std::vector<TSource> Read(const std::string_view& fileName)
+    template<Concepts::Iterable TCollection,
+             Concepts::FromStringStream TSource = std::decay_t<TCollection>::value_type>
+    TCollection Read(const std::string_view& fileName)
     {
         const std::filesystem::path path(fileName);
         if (!std::filesystem::exists(path))
@@ -25,17 +26,18 @@ namespace RPS::IO::File
         std::getline(file, line);
         file.close();
 
-        std::vector<TSource> array;
+        TCollection collection;
         std::istringstream stream(std::move(line));
-        TSource number;
-        while (stream >> number)
-            array.push_back(number);
+        TSource value;
+        while (stream >> value)
+            collection.insert(collection.end(), value);
 
-        return array;
+        return collection;
     }
 
     template<Concepts::Iterable TCollection>
-    void Write(const std::string_view& fileName, const TCollection& collection)
+    requires Concepts::ToStringStream<typename std::decay_t<TCollection>::value_type>
+    void Write(const std::string_view& fileName, TCollection&& collection)
     {
         std::ofstream file(fileName);
         if (!file.is_open())

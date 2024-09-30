@@ -2,6 +2,7 @@
 #define RPS_Concepts_H
 
 #include <utility>
+#include <strstream>
 
 namespace RPS::Concepts
 {
@@ -24,6 +25,18 @@ namespace RPS::Concepts
         value.size();
         typename std::decay_t<TCollection>::value_type;
         typename std::decay_t<TCollection>::iterator;
+    };
+
+    template<typename T>
+    concept FromStringStream = requires(T value)
+    {
+        std::declval<std::istringstream>() >> value;
+    };
+
+    template<typename T>
+    concept ToStringStream = requires(T value)
+    {
+        std::declval<std::ostringstream>() << value;
     };
 
     template<typename TCollection>

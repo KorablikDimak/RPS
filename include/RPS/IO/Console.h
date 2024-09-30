@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+#include "../Concepts.h"
+
 namespace RPS::IO::Console
 {
     template<typename TSource>
@@ -89,18 +91,21 @@ namespace RPS::IO::Console
         }
     }
 
-    template<typename TSource>
-    std::vector<TSource> Read(std::size_t elementsCount) noexcept
+    template<Concepts::Iterable TCollection, typename TSource = TCollection::value_type>
+    TCollection Read() noexcept
     {
-        std::vector<TSource> array(elementsCount);
+        std::cout << "Введите количество элементов." << std::endl;
+        const auto size = IO::Console::Read<std::size_t>();
 
-        for (std::size_t i = 0; i < elementsCount; ++i)
+        TCollection collection;
+
+        for (std::size_t i = 1; i <= size; ++i)
         {
             std::cout << "Введите " << i << " элемент:" << std::endl;
-            array[i] = Read<TSource>();
+            collection.insert(collection.end(), Read<TSource>());
         }
 
-        return array;
+        return collection;
     }
 }
 

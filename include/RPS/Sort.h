@@ -7,7 +7,7 @@ namespace RPS::Sort
 {
     template<Concepts::RandomAccess TCollection,
              Concepts::Comparable TValue = std::decay_t<TCollection>::value_type>
-    std::size_t Partition(TCollection&& collection, const std::size_t start, const std::size_t end) noexcept
+    static std::size_t Partition(TCollection&& collection, const std::size_t start, const std::size_t end) noexcept
     {
         auto i = static_cast<long long>(start);
         auto j = static_cast<long long>(end);
@@ -34,6 +34,9 @@ namespace RPS::Sort
     template<typename TCollection>
     void QuickSort(TCollection&& collection, const std::size_t start, const std::size_t end) noexcept
     {
+        if (collection.size() <= 1)
+            return;
+
         const std::size_t mid = Partition(std::forward<TCollection>(collection), start, end);
 
         if (start < mid - 1)
@@ -47,6 +50,7 @@ namespace RPS::Sort
     {
         if (collection.size() <= 1)
             return;
+
         QuickSort(std::forward<TCollection>(collection), 0, collection.size() - 1);
     }
 }

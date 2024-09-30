@@ -42,7 +42,7 @@ int main()
 
                 try
                 {
-                    array = IO::File::Read<TSource>(filePath);
+                    array = IO::File::Read<std::vector<TSource>>(filePath);
                     break;
                 }
                 catch (const std::runtime_error& ex)
@@ -53,10 +53,7 @@ int main()
             }
             else if (choice == 3)
             {
-                std::cout << "Введите количество элементов." << std::endl;
-                const auto size = IO::Console::Read<std::size_t>();
-
-                array = IO::Console::Read<TSource>(size);
+                array = IO::Console::Read<std::vector<TSource>>();
                 break;
             }
             else

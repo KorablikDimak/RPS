@@ -6,33 +6,29 @@
 
 namespace RPS::Random
 {
-    template<typename TReal>
-    TReal RandomReal(const TReal min, const TReal max) noexcept
+    inline static std::mt19937 SetGenerator()
     {
         std::random_device device;
         std::mt19937 generator(device());
         generator.seed(static_cast<unsigned int>(std::chrono::system_clock::now().time_since_epoch().count()));
-        std::uniform_real_distribution distribution(min, max);
-        return distribution(generator);
+        return generator;
     }
 
-    template<typename TInteger>
-    TInteger RandomInt(const TInteger min, const TInteger max) noexcept
-    {
-        std::random_device device;
-        std::mt19937 generator(device());
-        generator.seed(static_cast<unsigned int>(std::chrono::system_clock::now().time_since_epoch().count()));
-        std::uniform_int_distribution distribution(min, max);
-        return distribution(generator);
-    }
+    inline static std::mt19937 generator = SetGenerator();
 
     template<typename TNumber>
     TNumber Random(const TNumber min, const TNumber max) noexcept
     {
         if constexpr (std::is_floating_point_v<TNumber>)
-            return RandomReal<TNumber>(min, max);
+        {
+            std::uniform_real_distribution distribution(min, max);
+            return distribution(generator);
+        }
         else
-            return RandomInt<TNumber>(min, max);
+        {
+            std::uniform_int_distribution distribution(min, max);
+            return distribution(generator);
+        }
     }
 
     template<typename TNumber>
