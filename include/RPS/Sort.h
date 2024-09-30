@@ -38,6 +38,8 @@ namespace RPS::Sort
             return;
 
         const std::size_t mid = Partition(std::forward<TCollection>(collection), start, end);
+        if (mid == 0)
+            return;
 
         if (start < mid - 1)
             QuickSort(std::forward<TCollection>(collection), start, mid - 1);
