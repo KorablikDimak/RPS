@@ -90,7 +90,7 @@ int main()
 
                 try
                 {
-                    IO::File::Write(filePath, array);
+                    IO::File::Write(std::move(filePath), std::move(array));
                     std::cout << "Файл сохранен." << std::endl;
                 }
                 catch (const std::runtime_error& ex)

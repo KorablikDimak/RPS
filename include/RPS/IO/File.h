@@ -41,11 +41,11 @@ namespace RPS::IO::File
     {
         const std::filesystem::path path(fileName);
         if (!std::filesystem::exists(path))
-            throw std::runtime_error(std::format("Файл {} не существует.", fileName));
+            throw std::runtime_error(std::format("Файл {} не существует.", std::move(fileName)));
 
         std::ifstream file(fileName);
         if (!file.is_open())
-            throw std::runtime_error(std::format("Невозможно открыть файл {}", fileName));
+            throw std::runtime_error(std::format("Невозможно открыть файл {}", std::move(fileName)));
 
         std::string line;
         std::getline(file, line);
@@ -69,7 +69,7 @@ namespace RPS::IO::File
             throw std::runtime_error(std::format("Невозможно открыть файл {}", fileName));
 
         std::ostringstream stream;
-        for (const auto& element : collection)
+        for (auto&& element : collection)
             stream << element << "\t";
         const std::string line = stream.str();
 
@@ -83,10 +83,10 @@ namespace RPS::IO::File
     {
         std::ofstream file(fileName);
         if (!file.is_open())
-            throw std::runtime_error(std::format("Невозможно открыть файл {}", fileName));
+            throw std::runtime_error(std::format("Невозможно открыть файл {}", std::move(fileName)));
 
         std::ostringstream stream;
-        for (const auto& element : collection)
+        for (auto&& element : collection)
             stream << element << "\t";
         const std::string line = stream.str();
 
