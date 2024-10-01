@@ -8,91 +8,59 @@
 
 #include "RPS/Concepts.h"
 
-namespace RPS::IO::File
+namespace RPS::IO
 {
-    template<Concepts::Iterable TCollection,
-             Concepts::FromStringStream TSource = typename std::decay_t<TCollection>::value_type>
-    TCollection Read(const std::string& fileName)
+    class File
     {
-        const std::filesystem::path path(fileName);
-        if (!std::filesystem::exists(path))
-            throw std::runtime_error(std::format("Файл {} не существует.", fileName));
+    private:
+        std::string _fileName;
 
-        std::ifstream file(fileName);
-        if (!file.is_open())
-            throw std::runtime_error(std::format("Невозможно открыть файл {}", fileName));
+    public:
+        template<std::convertible_to<std::string> TString>
+        explicit File(TString&& fileName) noexcept : _fileName(std::forward<TString>(fileName)) {}
 
-        std::string line;
-        std::getline(file, line);
-        file.close();
+        template<Concepts::Iterable TCollection,
+                 Concepts::FromStringStream TSource = typename std::decay_t<TCollection>::value_type>
+        TCollection Read()
+        {
+            const std::filesystem::path path(_fileName);
+            if (!std::filesystem::exists(path))
+                throw std::runtime_error(std::format("Файл {} не существует.", _fileName));
 
-        TCollection collection;
-        std::istringstream stream(std::move(line));
-        TSource value;
-        while (stream >> value)
-            collection.insert(collection.end(), value);
+            std::ifstream file(_fileName);
+            if (!file.is_open())
+                throw std::runtime_error(std::format("Невозможно открыть файл {}", _fileName));
 
-        return collection;
-    }
+            std::string line;
+            std::getline(file, line);
+            file.close();
 
-    template<Concepts::Iterable TCollection,
-             Concepts::FromStringStream TSource = typename std::decay_t<TCollection>::value_type>
-    TCollection Read(std::string&& fileName)
-    {
-        const std::filesystem::path path(fileName);
-        if (!std::filesystem::exists(path))
-            throw std::runtime_error(std::format("Файл {} не существует.", std::move(fileName)));
+            TCollection collection;
+            std::istringstream stream(std::move(line));
+            TSource value;
+            while (stream >> value)
+                collection.insert(collection.end(), value);
 
-        std::ifstream file(fileName);
-        if (!file.is_open())
-            throw std::runtime_error(std::format("Невозможно открыть файл {}", std::move(fileName)));
+            return collection;
+        }
 
-        std::string line;
-        std::getline(file, line);
-        file.close();
+        template<Concepts::Iterable TCollection>
+        requires Concepts::ToStringStream<typename std::decay_t<TCollection>::value_type>
+        void Write(TCollection&& collection)
+        {
+            std::ofstream file(_fileName);
+            if (!file.is_open())
+                throw std::runtime_error(std::format("Невозможно открыть файл {}", _fileName));
 
-        TCollection collection;
-        std::istringstream stream(std::move(line));
-        TSource value;
-        while (stream >> value)
-            collection.insert(collection.end(), value);
+            std::ostringstream stream;
+            for (auto&& element : collection)
+                stream << element << "\t";
+            const std::string line = stream.str();
 
-        return collection;
-    }
-
-    template<Concepts::Iterable TCollection>
-    requires Concepts::ToStringStream<typename std::decay_t<TCollection>::value_type>
-    void Write(const std::string& fileName, TCollection&& collection)
-    {
-        std::ofstream file(fileName);
-        if (!file.is_open())
-            throw std::runtime_error(std::format("Невозможно открыть файл {}", fileName));
-
-        std::ostringstream stream;
-        for (auto&& element : collection)
-            stream << element << "\t";
-        const std::string line = stream.str();
-
-        file << line;
-        file.close();
-    }
-
-    template<Concepts::Iterable TCollection>
-    requires Concepts::ToStringStream<typename std::decay_t<TCollection>::value_type>
-    void Write(std::string&& fileName, TCollection&& collection)
-    {
-        std::ofstream file(fileName);
-        if (!file.is_open())
-            throw std::runtime_error(std::format("Невозможно открыть файл {}", std::move(fileName)));
-
-        std::ostringstream stream;
-        for (auto&& element : collection)
-            stream << element << "\t";
-        const std::string line = stream.str();
-
-        file << line;
-        file.close();
-    }
+            file << line;
+            file.close();
+        }
+    };
 }
 
 #endif
