@@ -26,11 +26,11 @@ namespace RPS::IO::Console
                 }
                 return static_cast<unsigned int>(number);
             }
-            catch (const std::invalid_argument &)
+            catch (const std::invalid_argument&)
             {
                 std::cout << "Некорректный ввод" << std::endl;
             }
-            catch (const std::out_of_range &)
+            catch (const std::out_of_range&)
             {
                 std::cout << "Некорректный ввод" << std::endl;
             }
@@ -56,11 +56,11 @@ namespace RPS::IO::Console
                 }
                 return static_cast<std::size_t>(number);
             }
-            catch (const std::invalid_argument &)
+            catch (const std::invalid_argument&)
             {
                 std::cout << "Некорректный ввод" << std::endl;
             }
-            catch (const std::out_of_range &)
+            catch (const std::out_of_range&)
             {
                 std::cout << "Некорректный ввод" << std::endl;
             }
@@ -80,11 +80,11 @@ namespace RPS::IO::Console
             {
                 return std::stod(input);
             }
-            catch (const std::invalid_argument &)
+            catch (const std::invalid_argument&)
             {
                 std::cout << "Некорректный ввод" << std::endl;
             }
-            catch (const std::out_of_range &)
+            catch (const std::out_of_range&)
             {
                 std::cout << "Некорректный ввод" << std::endl;
             }

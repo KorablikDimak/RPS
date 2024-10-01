@@ -42,7 +42,7 @@ int main()
 
                 try
                 {
-                    array = IO::File::Read<std::vector<TSource>>(filePath);
+                    array = IO::File::Read<std::vector<TSource>>(std::move(filePath));
                     break;
                 }
                 catch (const std::runtime_error& ex)
