@@ -1,12 +1,12 @@
 #ifndef RPS_Sort_H
 #define RPS_Sort_H
 
-#include "Concepts.h"
+#include "RPS/Concepts.h"
 
 namespace RPS::Sort
 {
     template<Concepts::RandomAccess TCollection,
-             Concepts::Comparable TValue = std::decay_t<TCollection>::value_type>
+             Concepts::Comparable TValue = typename std::decay_t<TCollection>::value_type>
     std::size_t Partition(TCollection&& collection, const std::size_t start, const std::size_t end) noexcept
     {
         auto i = static_cast<long long>(start);

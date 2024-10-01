@@ -2,8 +2,9 @@
 #define RPS_IO_ConsoleReader_H
 
 #include <iostream>
+#include <string>
 
-#include "../Concepts.h"
+#include "RPS/Concepts.h"
 
 namespace RPS::IO::Console
 {

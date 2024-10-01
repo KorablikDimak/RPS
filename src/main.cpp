@@ -1,10 +1,10 @@
 #include <iostream>
 #include <memory>
 
-#include "../include/RPS/IO/Console.h"
-#include "../include/RPS/IO/File.h"
-#include "../include/RPS/Random.h"
-#include "../include/RPS/Sort.h"
+#include "RPS/IO/Console.h"
+#include "RPS/IO/File.h"
+#include "RPS/Random.h"
+#include "RPS/Sort.h"
 
 int main()
 {

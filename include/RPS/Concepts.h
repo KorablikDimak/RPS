@@ -2,7 +2,7 @@
 #define RPS_Concepts_H
 
 #include <utility>
-#include <strstream>
+#include <sstream>
 
 namespace RPS::Concepts
 {
