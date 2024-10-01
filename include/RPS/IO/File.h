@@ -36,7 +36,7 @@ namespace RPS::IO::File
     }
 
     template<Concepts::Iterable TCollection,
-            Concepts::FromStringStream TSource = typename std::decay_t<TCollection>::value_type>
+             Concepts::FromStringStream TSource = typename std::decay_t<TCollection>::value_type>
     TCollection Read(std::string&& fileName)
     {
         const std::filesystem::path path(fileName);
