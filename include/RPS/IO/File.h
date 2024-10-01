@@ -10,7 +10,7 @@
 
 namespace RPS::IO
 {
-    class File
+    class File final
     {
     private:
         std::string _fileName;

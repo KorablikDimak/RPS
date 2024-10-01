@@ -8,7 +8,7 @@
 
 namespace RPS::IO
 {
-    class Console
+    class Console final
     {
     public:
         inline Console() noexcept = default;

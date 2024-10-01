@@ -8,12 +8,12 @@
 
 int main()
 {
-    using TSource = double;
+    using TSortedType = double;
     using namespace RPS;
 
     while (true)
     {
-        std::vector<TSource> array;
+        std::vector<TSortedType> array;
 
         while (true)
         {
@@ -23,10 +23,10 @@ int main()
             if (choice == 1)
             {
                 std::cout << "Введите нижнюю границу генерации." << std::endl;
-                const auto min = IO::Console().Read<TSource>();
+                const auto min = IO::Console().Read<TSortedType>();
 
                 std::cout << "Введите верхнюю границу генерации." << std::endl;
-                const auto max = IO::Console().Read<TSource>();
+                const auto max = IO::Console().Read<TSortedType>();
 
                 std::cout << "Введите длину генерируемого массива." << std::endl;
                 const auto size = IO::Console().Read<std::size_t>();
@@ -42,7 +42,7 @@ int main()
 
                 try
                 {
-                    array = IO::File(std::move(filePath)).Read<std::vector<TSource>>();
+                    array = IO::File(std::move(filePath)).Read<std::vector<TSortedType>>();
                     break;
                 }
                 catch (const std::runtime_error& ex)
@@ -53,7 +53,7 @@ int main()
             }
             else if (choice == 3)
             {
-                array = IO::Console().Read<std::vector<TSource>>();
+                array = IO::Console().Read<std::vector<TSortedType>>();
                 break;
             }
             else
