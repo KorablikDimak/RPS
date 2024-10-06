@@ -9,8 +9,8 @@ namespace RPS::Sort
              Concepts::Comparable TValue = typename std::decay_t<TCollection>::value_type>
     std::size_t Partition(TCollection&& collection, const std::size_t start, const std::size_t end) noexcept
     {
-        auto i = static_cast<long long>(start);
-        auto j = static_cast<long long>(end);
+        std::size_t i = start;
+        std::size_t j = end;
         const TValue pivot = collection[(start + end) / 2];
 
         while (i <= j)
