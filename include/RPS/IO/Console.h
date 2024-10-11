@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 
-#include "RPS/Concepts.h"
+#include <ExtendedCpp/LINQ/Concepts.h>
 
 namespace RPS::IO
 {
@@ -97,7 +97,7 @@ namespace RPS::IO
             }
         }
 
-        template<Concepts::Iterable TCollection, typename TSource = TCollection::value_type>
+        template<ExtendedCpp::LINQ::Concepts::Iterable TCollection, typename TSource = TCollection::value_type>
         TCollection Read() noexcept
         {
             std::cout << "Введите количество элементов." << std::endl;

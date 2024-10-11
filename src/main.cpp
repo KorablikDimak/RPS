@@ -1,15 +1,15 @@
 #include <iostream>
 #include <memory>
 
+#include <ExtendedCpp/LINQ.h>
+#include <ExtendedCpp/Random.h>
+
 #include "RPS/IO/Console.h"
 #include "RPS/IO/File.h"
-#include "RPS/Random.h"
-#include "RPS/Sort.h"
 
 int main()
 {
     using TSortedType = double;
-    using namespace RPS;
 
     while (true)
     {
@@ -18,20 +18,20 @@ int main()
         while (true)
         {
             std::cout << "1- сгенерировать массив, 2- прочитать из файла, 3- ручной ввод." << std::endl;
-            const auto choice = IO::Console().Read<unsigned int>();
+            const auto choice = RPS::IO::Console().Read<unsigned int>();
 
             if (choice == 1)
             {
                 std::cout << "Введите нижнюю границу генерации." << std::endl;
-                const auto min = IO::Console().Read<TSortedType>();
+                const auto min = RPS::IO::Console().Read<TSortedType>();
 
                 std::cout << "Введите верхнюю границу генерации." << std::endl;
-                const auto max = IO::Console().Read<TSortedType>();
+                const auto max = RPS::IO::Console().Read<TSortedType>();
 
                 std::cout << "Введите длину генерируемого массива." << std::endl;
-                const auto size = IO::Console().Read<std::size_t>();
+                const auto size = RPS::IO::Console().Read<std::size_t>();
 
-                array = Random::RandomSequence(min, max, size);
+                array = ExtendedCpp::Random::RandomSequence(min, max, size);
                 break;
             }
             else if (choice == 2)
@@ -42,7 +42,7 @@ int main()
 
                 try
                 {
-                    array = IO::File(std::move(filePath)).Read<std::vector<TSortedType>>();
+                    array = RPS::IO::File(std::move(filePath)).Read<std::vector<TSortedType>>();
                     break;
                 }
                 catch (const std::runtime_error& ex)
@@ -53,7 +53,7 @@ int main()
             }
             else if (choice == 3)
             {
-                array = IO::Console().Read<std::vector<TSortedType>>();
+                array = RPS::IO::Console().Read<std::vector<TSortedType>>();
                 break;
             }
             else
@@ -68,7 +68,7 @@ int main()
             std::cout << element << "\t";
         std::cout << std::endl;
 
-        Sort::QuickSort(array);
+        ExtendedCpp::LINQ::Sort::QuickSort(array.data(), 0, array.size() - 1);
 
         std::cout << "Отсортированный массив:" << std::endl;
         for (const auto element : array)
@@ -80,7 +80,7 @@ int main()
             std::cout << "Выберете 1 чтобы сохранить отсортированный массив в файл, "
                          "2 чтобы повторить работу программы "
                          "или любые другие символы чтобы завершить программу" << std::endl;
-            const auto choice = IO::Console().Read<unsigned int>();
+            const auto choice = RPS::IO::Console().Read<unsigned int>();
 
             if (choice == 1)
             {
@@ -90,7 +90,7 @@ int main()
 
                 try
                 {
-                    IO::File(std::move(filePath)).Write(std::move(array));
+                    RPS::IO::File(std::move(filePath)).Write(std::move(array));
                     std::cout << "Файл сохранен." << std::endl;
                 }
                 catch (const std::runtime_error& ex)
@@ -101,7 +101,7 @@ int main()
 
                 std::cout << "Выберете 1 чтобы повторить работу программы "
                              "или любые другие символы чтобы завершить программу" << std::endl;
-                const auto quitChoice = IO::Console().Read<unsigned int>();
+                const auto quitChoice = RPS::IO::Console().Read<unsigned int>();
 
                 if (quitChoice == 1)
                 {

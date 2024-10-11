@@ -6,7 +6,7 @@
 #include <sstream>
 #include <format>
 
-#include "RPS/Concepts.h"
+#include <ExtendedCpp/LINQ/Concepts.h>
 
 namespace RPS::IO
 {
@@ -19,8 +19,8 @@ namespace RPS::IO
         template<std::convertible_to<std::string> TString>
         explicit File(TString&& fileName) noexcept : _fileName(std::forward<TString>(fileName)) {}
 
-        template<Concepts::Iterable TCollection,
-                 Concepts::FromStringStream TSource = typename std::decay_t<TCollection>::value_type>
+        template<ExtendedCpp::LINQ::Concepts::Iterable TCollection,
+                 typename TSource = typename std::decay_t<TCollection>::value_type>
         TCollection Read()
         {
             const std::filesystem::path path(_fileName);
@@ -44,8 +44,7 @@ namespace RPS::IO
             return collection;
         }
 
-        template<Concepts::Iterable TCollection>
-        requires Concepts::ToStringStream<typename std::decay_t<TCollection>::value_type>
+        template<ExtendedCpp::LINQ::Concepts::Iterable TCollection>
         void Write(TCollection&& collection)
         {
             std::ofstream file(_fileName);

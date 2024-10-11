@@ -9,9 +9,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_executable(RPS)
 
 set(INCLUDES
-        include/RPS/Sort.h
-        include/RPS/Random.h
-        include/RPS/Concepts.h
         include/RPS/IO/File.h
         include/RPS/IO/Console.h)
 
@@ -20,11 +17,15 @@ set(SOURCE
 
 target_sources(RPS
         PRIVATE ${SOURCE}
-        PUBLIC FILE_SET HEADERS
+        PRIVATE FILE_SET HEADERS
         BASE_DIRS ${PROJECT_SOURCE_DIR}
         FILES ${INCLUDES})
 
-target_include_directories(RPS PUBLIC
+target_include_directories(RPS PRIVATE
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>"
-        PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>")
+
+find_package(ExtendedCPP REQUIRED)
+find_package(libpqxx REQUIRED)
+
+target_link_libraries(RPS PRIVATE ExtendedCpp::LINQ ExtendedCpp::Reflection libpqxx::pqxx)
