@@ -6,26 +6,53 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(RPS)
+find_package(ExtendedCPP REQUIRED)
+find_package(libpqxx REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS HttpServer Widgets)
+qt_standard_project_setup()
 
-set(INCLUDES
-        include/RPS/IO/File.h
-        include/RPS/IO/Console.h)
+set(WebApi_INCLUDES
+        include/RPS/WebApi/Api.h
+        include/RPS/WebApi/DbPool.h
+        include/RPS/WebApi/DbProvider.h
+        include/RPS/WebApi/DbMacros.h
+        src/WebApi/DataBase.cpp
+        include/RPS/WebApi/DataBase.h)
 
-set(SOURCE
-        src/main.cpp)
+set(WebApi_SOURCE
+        src/WebApi/main.cpp
+        src/WebApi/Api.cpp
+        src/WebApi/DbPool.cpp
+        src/WebApi/DbProvider.cpp
+        src/WebApi/DataBase.cpp
+        include/RPS/WebApi/DataBase.h)
 
-target_sources(RPS
-        PRIVATE ${SOURCE}
-        PRIVATE FILE_SET HEADERS
-        BASE_DIRS ${PROJECT_SOURCE_DIR}
-        FILES ${INCLUDES})
+qt_add_executable(WebApi ${WebApi_INCLUDES} ${WebApi_SOURCE})
+target_link_libraries(WebApi PRIVATE Qt6::HttpServer libpqxx::pqxx ExtendedCpp::LINQ)
 
-target_include_directories(RPS PRIVATE
+target_include_directories(WebApi PRIVATE
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>")
 
-find_package(ExtendedCPP REQUIRED)
-find_package(libpqxx REQUIRED)
+set_target_properties(WebApi PROPERTIES
+        MACOSX_BUNDLE ON)
 
-target_link_libraries(RPS PRIVATE ExtendedCpp::LINQ ExtendedCpp::Reflection libpqxx::pqxx)
+set(Application_INCLUDES
+        include/RPS/Application/MainWindow.h)
+
+set(Application_SOURCE
+        src/Application/MainWindow.cpp
+        src/Application/main.cpp)
+
+set(Application_UI
+        src/Application/MainWindow.ui)
+
+qt_add_executable(Application ${Application_INCLUDES} ${Application_SOURCE} ${Application_UI})
+target_link_libraries(Application PRIVATE Qt6::Widgets ExtendedCpp::LINQ)
+
+target_include_directories(Application PRIVATE
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>")
+
+set_target_properties(Application PROPERTIES
+        MACOSX_BUNDLE ON)
