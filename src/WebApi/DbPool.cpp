@@ -9,21 +9,11 @@ RPS::WebApi::DbPool::DbPool(const std::string& connectionString, const unsigned 
     _activeConnection = 0;
 }
 
-RPS::WebApi::DbPool::DbPool(RPS::WebApi::DbPool&& dbPool) noexcept
+RPS::WebApi::DbPool::DbPool(std::string&& connectionString, const unsigned char pollSize) noexcept
 {
-    _connectionString = dbPool._connectionString;
-    _poolSize = dbPool._poolSize;
-    _activeConnection = dbPool._activeConnection;
-    _connections = std::move(dbPool._connections);
-}
-
-RPS::WebApi::DbPool& RPS::WebApi::DbPool::operator=(RPS::WebApi::DbPool&& dbPool) noexcept
-{
-    _connectionString = dbPool._connectionString;
-    _poolSize = dbPool._poolSize;
-    _activeConnection = dbPool._activeConnection;
-    _connections = std::move(dbPool._connections);
-    return *this;
+    _connectionString = std::move(connectionString);
+    _poolSize = pollSize;
+    _activeConnection = 0;
 }
 
 bool RPS::WebApi::DbPool::IsEmpty() const noexcept
@@ -31,7 +21,7 @@ bool RPS::WebApi::DbPool::IsEmpty() const noexcept
     return _connections.empty();
 }
 
-std::unique_ptr<pqxx::connection> RPS::WebApi::DbPool::GetConnection() noexcept
+pqxx::connection RPS::WebApi::DbPool::GetConnection() noexcept
 {
     while (true)
     {
@@ -44,15 +34,15 @@ std::unique_ptr<pqxx::connection> RPS::WebApi::DbPool::GetConnection() noexcept
     std::lock_guard lock(_queueConnectionMutex);
 
     if (_connections.empty() && _activeConnection < _poolSize)
-        _connections.push(std::make_unique<pqxx::connection>(_connectionString));
+        _connections.emplace(_connectionString);
 
     ++_activeConnection;
-    std::unique_ptr<pqxx::connection> connection = std::move(_connections.front());
+    pqxx::connection connection = std::move(_connections.front());
     _connections.pop();
     return connection;
 }
 
-void RPS::WebApi::DbPool::ReturnInPool(std::unique_ptr<pqxx::connection>&& connection) noexcept
+void RPS::WebApi::DbPool::ReturnInPool(pqxx::connection&& connection) noexcept
 {
     std::lock_guard lock(_queueConnectionMutex);
 

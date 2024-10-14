@@ -16,16 +16,16 @@ set(WebApi_INCLUDES
         include/RPS/WebApi/DbPool.h
         include/RPS/WebApi/DbProvider.h
         include/RPS/WebApi/DbMacros.h
-        src/WebApi/DataBase.cpp
-        include/RPS/WebApi/DataBase.h)
+        src/WebApi/DataContext.cpp
+        include/RPS/WebApi/DataContext.h
+        include/RPS/WebApi/DbArray.h)
 
 set(WebApi_SOURCE
         src/WebApi/main.cpp
         src/WebApi/Api.cpp
         src/WebApi/DbPool.cpp
-        src/WebApi/DbProvider.cpp
-        src/WebApi/DataBase.cpp
-        include/RPS/WebApi/DataBase.h)
+        src/WebApi/DataContext.cpp
+        include/RPS/WebApi/DataContext.h)
 
 qt_add_executable(WebApi ${WebApi_INCLUDES} ${WebApi_SOURCE})
 target_link_libraries(WebApi PRIVATE Qt6::HttpServer libpqxx::pqxx ExtendedCpp::LINQ)

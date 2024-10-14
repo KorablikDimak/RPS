@@ -7,23 +7,18 @@
 
 namespace RPS::WebApi
 {
-    class DbProvider
+    class DbProvider final
     {
     private:
         DbPool::Ptr _pool;
 
     public:
-        typedef std::unique_ptr<DbProvider> Ptr;
+        typedef std::shared_ptr<DbProvider> Ptr;
 
-        explicit DbProvider(const std::string& connectionString, unsigned char poolSize = 1) noexcept;
-        explicit DbProvider(const DbProvider& pool) noexcept = delete;
-        DbProvider(DbProvider&& pool) noexcept;
-        explicit DbProvider(const DbPool::Ptr& pool) noexcept = delete;
-        explicit DbProvider(DbPool::Ptr&& pool) noexcept;
-        ~DbProvider() = default;
-
-        DbProvider& operator=(const DbProvider& dbProvider) noexcept = delete;
-        DbProvider& operator=(DbProvider&& dbProvider) noexcept;
+        inline explicit DbProvider(const DbPool::Ptr& pool) noexcept
+        {
+            _pool = pool;
+        }
 
         template<typename TTransaction, typename ...TParams,
                  typename TResult = std::invoke_result_t<TTransaction, pqxx::work&, TParams...>>
@@ -31,8 +26,8 @@ namespace RPS::WebApi
         {
             return std::async(std::launch::async, [this, transaction](auto&&... args)->TResult
             {
-                std::unique_ptr<pqxx::connection> connection = _pool->GetConnection();
-                pqxx::work work{*connection};
+                pqxx::connection connection = _pool->GetConnection();
+                pqxx::work work{connection};
                 TResult result = transaction(work, std::forward<TParams>(args)...);
                 work.commit();
                 _pool->ReturnInPool(std::move(connection));

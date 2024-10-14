@@ -8,30 +8,25 @@
 
 namespace RPS::WebApi
 {
-    class DbPool
+    class DbPool final
     {
     private:
         std::string _connectionString;
         unsigned char _poolSize;
         unsigned char _activeConnection;
-        std::queue<std::unique_ptr<pqxx::connection>> _connections;
+        std::queue<pqxx::connection> _connections;
         mutable std::mutex _queueConnectionMutex;
 
     public:
-        typedef std::unique_ptr<DbPool> Ptr;
+        typedef std::shared_ptr<DbPool> Ptr;
 
-        explicit DbPool(const std::string& connectionString, unsigned char poolSize = 1) noexcept;
-        explicit DbPool(const DbPool& dbPool) noexcept = delete;
-        DbPool(DbPool&& dbPool) noexcept;
-        ~DbPool() = default;
-
-        DbPool& operator=(const DbPool& dbPool) = delete;
-        DbPool& operator=(DbPool&& dbPool) noexcept;
+        explicit DbPool(const std::string& connectionString, unsigned char poolSize) noexcept;
+        explicit DbPool(std::string&& connectionString, unsigned char poolSize) noexcept;
 
         [[nodiscard]]
         bool IsEmpty() const noexcept;
-        std::unique_ptr<pqxx::connection> GetConnection() noexcept;
-        void ReturnInPool(std::unique_ptr<pqxx::connection>&& connection) noexcept;
+        pqxx::connection GetConnection() noexcept;
+        void ReturnInPool(pqxx::connection&& connection) noexcept;
     };
 }
 
