@@ -3,7 +3,7 @@
 
 #include <QtHttpServer>
 
-namespace RPS::WebApi
+namespace RPS::WebApi::Api
 {
     void Startup(QHttpServer& httpServer);
 }

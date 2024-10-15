@@ -20,11 +20,12 @@ namespace RPS::WebApi
             _pool = pool;
         }
 
-        template<typename TTransaction, typename ...TParams,
-                 typename TResult = std::invoke_result_t<TTransaction, pqxx::work&, TParams...>>
+        template<typename TTransaction, typename... TParams,
+                 typename TResult = std::invoke_result_t<TTransaction, pqxx::work&, TParams&&...>>
+        requires (!std::same_as<void, TResult>)
         std::future<TResult> TransactAsync(TTransaction&& transaction, TParams&&... params) const
         {
-            return std::async(std::launch::async, [this, transaction](auto&&... args)->TResult
+            return std::async(std::launch::async, [this](TTransaction&& transaction, auto&&... args)->TResult
             {
                 pqxx::connection connection = _pool->GetConnection();
                 pqxx::work work{connection};
@@ -32,7 +33,21 @@ namespace RPS::WebApi
                 work.commit();
                 _pool->ReturnInPool(std::move(connection));
                 return result;
-            }, params...);
+            }, std::forward<TTransaction>(transaction), std::forward<TParams>(params)...);
+        }
+
+        template<typename TTransaction, typename... TParams>
+        requires std::same_as<void, std::invoke_result_t<TTransaction, pqxx::work&, TParams&&...>>
+        std::future<void> TransactAsync(TTransaction&& transaction, TParams&&... params) const
+        {
+            return std::async(std::launch::async, [this](TTransaction&& transaction, auto&&... args)
+            {
+                pqxx::connection connection = _pool->GetConnection();
+                pqxx::work work{connection};
+                transaction(work, std::forward<TParams>(args)...);
+                work.commit();
+                _pool->ReturnInPool(std::move(connection));
+            }, std::forward<TTransaction>(transaction), std::forward<TParams>(params)...);
         }
     };
 }

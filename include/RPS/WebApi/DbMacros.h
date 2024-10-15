@@ -7,8 +7,7 @@
 object.field = row[#field].as<decltype(object.field)>();
 
 #define GET_ARRAY(field) \
-decltype(object.field) resultArray; \
-auto array = row["innerArray"].as_sql_array<decltype(object.field)::value_type>(); \
+auto array = row["innerArray"].as_sql_array<typename decltype(object.field)::value_type>(); \
 object.field = decltype(object.field)(array.cbegin(), array.cend());
 
 #endif

@@ -2,7 +2,7 @@
 
 #include "RPS/WebApi/Api.h"
 
-void RPS::WebApi::Startup(QHttpServer& httpServer)
+void RPS::WebApi::Api::Startup(QHttpServer& httpServer)
 {
     const quint16 port = httpServer.listen(QHostAddress::Any);
 

@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 
     try
     {
-        RPS::WebApi::Startup(httpServer);
+        RPS::WebApi::Api::Startup(httpServer);
     }
     catch (const std::domain_error& ex)
     {

@@ -16,16 +16,15 @@ set(WebApi_INCLUDES
         include/RPS/WebApi/DbPool.h
         include/RPS/WebApi/DbProvider.h
         include/RPS/WebApi/DbMacros.h
-        src/WebApi/DataContext.cpp
         include/RPS/WebApi/DataContext.h
-        include/RPS/WebApi/DbArray.h)
+        include/RPS/WebApi/DbArray.h
+        include/RPS/WebApi/DbUtility.h)
 
 set(WebApi_SOURCE
         src/WebApi/main.cpp
         src/WebApi/Api.cpp
         src/WebApi/DbPool.cpp
-        src/WebApi/DataContext.cpp
-        include/RPS/WebApi/DataContext.h)
+        src/WebApi/DataContext.cpp)
 
 qt_add_executable(WebApi ${WebApi_INCLUDES} ${WebApi_SOURCE})
 target_link_libraries(WebApi PRIVATE Qt6::HttpServer libpqxx::pqxx ExtendedCpp::LINQ)
@@ -34,8 +33,10 @@ target_include_directories(WebApi PRIVATE
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>")
 
-set_target_properties(WebApi PROPERTIES
-        MACOSX_BUNDLE ON)
+if(APPLE)
+    set_target_properties(WebApi PROPERTIES
+            MACOSX_BUNDLE ON)
+endif()
 
 set(Application_INCLUDES
         include/RPS/Application/MainWindow.h)
@@ -48,11 +49,13 @@ set(Application_UI
         src/Application/MainWindow.ui)
 
 qt_add_executable(Application ${Application_INCLUDES} ${Application_SOURCE} ${Application_UI})
-target_link_libraries(Application PRIVATE Qt6::Widgets ExtendedCpp::LINQ)
+target_link_libraries(Application PRIVATE Qt6::Widgets)
 
 target_include_directories(Application PRIVATE
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>")
 
-set_target_properties(Application PROPERTIES
-        MACOSX_BUNDLE ON)
+if(APPLE)
+    set_target_properties(Application PROPERTIES
+            MACOSX_BUNDLE ON)
+endif()
