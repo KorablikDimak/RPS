@@ -3,9 +3,18 @@
 
 #include <QtHttpServer>
 
-namespace RPS::WebApi::Api
+#include "RPS/WebApi/Storage.h"
+
+namespace RPS::WebApi
 {
-    void Startup(QHttpServer& httpServer);
+    class Api final
+    {
+    private:
+        QHttpServer _httpServer;
+
+    public:
+        explicit Api(const Storage::Ptr& storage);
+    };
 }
 
 #endif

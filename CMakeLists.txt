@@ -18,16 +18,18 @@ set(WebApi_INCLUDES
         include/RPS/WebApi/DbMacros.h
         include/RPS/WebApi/DataContext.h
         include/RPS/WebApi/DbArray.h
-        include/RPS/WebApi/DbUtility.h)
+        include/RPS/WebApi/DbUtility.h
+        include/RPS/WebApi/Storage.h)
 
 set(WebApi_SOURCE
         src/WebApi/main.cpp
         src/WebApi/Api.cpp
         src/WebApi/DbPool.cpp
-        src/WebApi/DataContext.cpp)
+        src/WebApi/DataContext.cpp
+        src/WebApi/Storage.cpp)
 
 qt_add_executable(WebApi ${WebApi_INCLUDES} ${WebApi_SOURCE})
-target_link_libraries(WebApi PRIVATE Qt6::HttpServer libpqxx::pqxx ExtendedCpp::LINQ)
+target_link_libraries(WebApi PRIVATE Qt6::HttpServer libpqxx::pqxx ExtendedCpp::LINQ ExtendedCpp::Json ExtendedCpp::DI)
 
 target_include_directories(WebApi PRIVATE
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
@@ -36,6 +38,18 @@ target_include_directories(WebApi PRIVATE
 if(APPLE)
     set_target_properties(WebApi PROPERTIES
             MACOSX_BUNDLE ON)
+
+    add_custom_command(
+            TARGET WebApi POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy
+            ${CMAKE_CURRENT_SOURCE_DIR}/variables.json
+            ${CMAKE_CURRENT_BINARY_DIR}/WebApi.app/Contents/MacOS/variables.json)
+else()
+    add_custom_command(
+            TARGET WebApi POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy
+            ${CMAKE_CURRENT_SOURCE_DIR}/variables.json
+            ${CMAKE_CURRENT_BINARY_DIR}/variables.json)
 endif()
 
 set(Application_INCLUDES
