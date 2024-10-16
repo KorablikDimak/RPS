@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
             [](const ExtendedCpp::DI::ServiceProvider& provider)
             { return std::make_shared<RPS::WebApi::DataContext>(provider.GetServiceRequired<RPS::WebApi::DbProvider>()); });
 
-    auto api = ExtendedCpp::DI::Register<RPS::WebApi::Api(RPS::WebApi::Storage)>::CreateRequired(serviceProvider);
+    RPS::WebApi::Api api(serviceProvider.GetServiceRequired<RPS::WebApi::Storage>(),
+                         serviceProvider.GetServiceRequired<RPS::WebApi::DataContext>());
     return QCoreApplication::exec();
 }

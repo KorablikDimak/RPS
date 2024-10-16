@@ -12,16 +12,16 @@ namespace RPS::WebApi
     {
     public:
         std::int64_t id{};
-        std::vector<T> innerArray;
-        bool isSorted{};
+        std::vector<T> inner_array;
+        bool is_sorted{};
     };
 
     template<typename T>
     inline void FromDbRow(const pqxx::row& row, DbArray<T>& object)
     {
         GET_VALUE(id)
-        GET_ARRAY(innerArray)
-        GET_VALUE(isSorted)
+        GET_ARRAY(inner_array)
+        GET_VALUE(is_sorted)
     }
 
     template<typename T>

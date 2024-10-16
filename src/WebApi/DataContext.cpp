@@ -42,8 +42,8 @@ std::future<void> RPS::WebApi::DataContext::Add(const DbArray<double>& array)
     return _dbProvider->TransactAsync([](pqxx::work& work, const DbArray<double>& array)
     {
 
-        std::string query = std::format("INSERT INTO Arrays (array, isSorted) VALUES ({},{})",
-                                        DbUtility::ToString(array.innerArray), array.isSorted);
+        std::string query = std::format("INSERT INTO Arrays (inner_array, is_sorted) VALUES ({},{})",
+                                        DbUtility::ToString(array.inner_array), array.is_sorted);
         work.exec(std::move(query));
     }, array);
 }
@@ -52,9 +52,9 @@ std::future<void> RPS::WebApi::DataContext::Update(const DbArray<double>& array)
 {
     return _dbProvider->TransactAsync([](pqxx::work& work, const DbArray<double>& array)
     {
-        const std::string query = std::format("UPDATE Arrays SET (array, isSorted) VALUES ({},{}) WHERE id = {}",
-                                              DbUtility::ToString(array.innerArray),
-                                              array.isSorted,
+        const std::string query = std::format("UPDATE Arrays SET (inner_array, is_sorted) VALUES ({},{}) WHERE id = {}",
+                                              DbUtility::ToString(array.inner_array),
+                                              array.is_sorted,
                                               array.id);
         work.exec(query);
     }, array);

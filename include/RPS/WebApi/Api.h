@@ -4,6 +4,7 @@
 #include <QtHttpServer>
 
 #include "RPS/WebApi/Storage.h"
+#include "RPS/WebApi/DataContext.h"
 
 namespace RPS::WebApi
 {
@@ -13,7 +14,7 @@ namespace RPS::WebApi
         QHttpServer _httpServer;
 
     public:
-        explicit Api(const Storage::Ptr& storage);
+        Api(const Storage::Ptr& storage, const DataContext::Ptr& dataContext);
     };
 }
 
