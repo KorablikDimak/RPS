@@ -6,12 +6,12 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include(cmake/utility.cmake)
-
 find_package(ExtendedCPP REQUIRED)
 find_package(libpqxx REQUIRED)
 find_package(Qt6 REQUIRED COMPONENTS Core HttpServer Widgets)
 qt_standard_project_setup()
+
+include(cmake/utility.cmake)
 
 set(WebApi_INCLUDES
         include/RPS/WebApi/Api.h
