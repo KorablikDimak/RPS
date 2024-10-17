@@ -1,3 +1,11 @@
+function(set_private_include_directories)
+    foreach(target ${ARGN})
+        target_include_directories(target PRIVATE
+                "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+                "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>")
+    endforeach()
+endfunction()
+
 function(deploy_qt)
     if(APPLE)
         find_program(DEPLOYQT_EXECUTABLE macdeployqt HINTS "${_qt_bin_dir}" REQUIRED)
