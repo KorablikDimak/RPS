@@ -30,8 +30,11 @@ RPS::WebApi::Api::Api(const ExtendedCpp::DI::ServiceProvider& serverProvider)
     });
 
     auto storage = serverProvider.GetServiceRequired<Storage>();
-    if (!_tcpserver.listen(QHostAddress(storage->Host().c_str()), storage->Port()) || !_httpServer.bind(&_tcpserver))
+    if (!_tcpserver.listen(QHostAddress(storage->Host().c_str()), storage->Port()))
         throw std::domain_error("Can not startup http server.");
     else
-        std::cout << std::format("web api running on http://{}:{}/", storage->Host(), storage->Port()) << std::endl;
+    {
+        _httpServer.bind(&_tcpserver);
+        std::cout << std::format("WebApi running on http://{}:{}/", storage->Host(), storage->Port()) << std::endl;
+    }
 }
