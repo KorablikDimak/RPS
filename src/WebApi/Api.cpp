@@ -4,11 +4,11 @@
 
 #include "RPS/WebApi/Api.h"
 
-RPS::WebApi::Api::Api(const Storage::Ptr& storage, const DataContext::Ptr& dataContext)
+RPS::WebApi::Api::Api(const ExtendedCpp::DI::ServiceProvider& serverProvider)
 {
-    _httpServer.route("/GetArray/<arg>", [dataContext](const std::int64_t id)
+    _httpServer.route("/GetArray/<arg>", [serverProvider](const std::int64_t id)
     {
-        auto array = dataContext->Get(id).get().inner_array;
+        auto array = serverProvider.GetServiceRequired<DataContext>()->Get(id).get().inner_array;
         std::ostringstream stream;
         for (const auto element : array)
             stream << element << "\t";
@@ -16,9 +16,9 @@ RPS::WebApi::Api::Api(const Storage::Ptr& storage, const DataContext::Ptr& dataC
         return QString(stream.str().c_str());
     });
 
-    _httpServer.route("/GetArrays", [dataContext]()
+    _httpServer.route("/GetArrays", [serverProvider]()
     {
-        auto arrays = dataContext->Get().get();
+        auto arrays = serverProvider.GetServiceRequired<DataContext>()->Get().get();
         std::ostringstream stream;
         for (const auto& array : arrays)
         {
@@ -29,9 +29,8 @@ RPS::WebApi::Api::Api(const Storage::Ptr& storage, const DataContext::Ptr& dataC
         return QString(stream.str().c_str());
     });
 
-    const quint16 port = _httpServer.listen(QHostAddress(storage->Host().c_str()), storage->Port());
-
-    if (!port)
+    auto storage = serverProvider.GetServiceRequired<Storage>();
+    if (!_tcpserver.listen(QHostAddress(storage->Host().c_str()), storage->Port()) || !_httpServer.bind(&_tcpserver))
         throw std::domain_error("Can not startup http server.");
     else
         std::cout << std::format("web api running on http://{}:{}/", storage->Host(), storage->Port()) << std::endl;

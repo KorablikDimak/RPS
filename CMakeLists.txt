@@ -6,9 +6,11 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include(cmake/utility.cmake)
+
 find_package(ExtendedCPP REQUIRED)
 find_package(libpqxx REQUIRED)
-find_package(Qt6 REQUIRED COMPONENTS HttpServer Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Core HttpServer Widgets)
 qt_standard_project_setup()
 
 set(WebApi_INCLUDES
@@ -30,27 +32,10 @@ set(WebApi_SOURCE
 
 qt_add_executable(WebApi ${WebApi_INCLUDES} ${WebApi_SOURCE})
 target_link_libraries(WebApi PRIVATE Qt6::HttpServer libpqxx::pqxx ExtendedCpp::LINQ ExtendedCpp::Json ExtendedCpp::DI)
-
+target_add_content(WebApi settings.json)
 target_include_directories(WebApi PRIVATE
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>")
-
-if(APPLE)
-    set_target_properties(WebApi PROPERTIES
-            MACOSX_BUNDLE ON)
-
-    add_custom_command(
-            TARGET WebApi POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy
-            ${CMAKE_CURRENT_SOURCE_DIR}/variables.json
-            ${CMAKE_CURRENT_BINARY_DIR}/WebApi.app/Contents/MacOS/variables.json)
-else()
-    add_custom_command(
-            TARGET WebApi POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy
-            ${CMAKE_CURRENT_SOURCE_DIR}/variables.json
-            ${CMAKE_CURRENT_BINARY_DIR}/variables.json)
-endif()
 
 set(Application_INCLUDES
         include/RPS/Application/MainWindow.h)
@@ -64,12 +49,8 @@ set(Application_UI
 
 qt_add_executable(Application ${Application_INCLUDES} ${Application_SOURCE} ${Application_UI})
 target_link_libraries(Application PRIVATE Qt6::Widgets)
-
 target_include_directories(Application PRIVATE
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>")
 
-if(APPLE)
-    set_target_properties(Application PROPERTIES
-            MACOSX_BUNDLE ON)
-endif()
+deploy_qt(WebApi Application)

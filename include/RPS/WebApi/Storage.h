@@ -15,7 +15,7 @@ namespace RPS::WebApi
     public:
         typedef std::shared_ptr<Storage> Ptr;
 
-        explicit Storage(std::string_view file);
+        explicit Storage(const std::string& file);
         std::string Variable(const std::string& key);
 
         std::string ConnectionString();

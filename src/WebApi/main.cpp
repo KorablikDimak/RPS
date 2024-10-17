@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 
     serviceProvider.AddSingleton<RPS::WebApi::Storage>(
             [](const ExtendedCpp::DI::ServiceProvider&)
-            { return std::make_shared<RPS::WebApi::Storage>("variables.json"); });
+            { return std::make_shared<RPS::WebApi::Storage>("settings.json"); });
 
     serviceProvider.AddSingleton<RPS::WebApi::DbPool>(
             [](const ExtendedCpp::DI::ServiceProvider& provider)
@@ -29,7 +29,6 @@ int main(int argc, char *argv[])
             [](const ExtendedCpp::DI::ServiceProvider& provider)
             { return std::make_shared<RPS::WebApi::DataContext>(provider.GetServiceRequired<RPS::WebApi::DbProvider>()); });
 
-    RPS::WebApi::Api api(serviceProvider.GetServiceRequired<RPS::WebApi::Storage>(),
-                         serviceProvider.GetServiceRequired<RPS::WebApi::DataContext>());
+    RPS::WebApi::Api api(serviceProvider);
     return QCoreApplication::exec();
 }

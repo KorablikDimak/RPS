@@ -8,7 +8,7 @@
 
 #include "RPS/WebApi/Storage.h"
 
-RPS::WebApi::Storage::Storage(std::string_view filePath)
+RPS::WebApi::Storage::Storage(const std::string& filePath)
 {
     std::filesystem::path path(filePath);
     if (!exists(path))
@@ -55,5 +55,5 @@ std::string RPS::WebApi::Storage::Host()
 
 std::uint16_t RPS::WebApi::Storage::Port()
 {
-    return std::stoul(Variable("port"));
+    return static_cast<std::uint16_t>(std::stoul(Variable("port")));
 }

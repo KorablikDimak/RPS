@@ -29,8 +29,10 @@ namespace RPS::WebApi
         requires std::same_as<typename std::decay_t<TCollection>::value_type, DbArray<double>>
         std::future<void> Add(TCollection&& arrays)
         {
+            std::list<std::future<void>> tasks;
             for (const DbArray<double>& array : arrays)
                 Add(array);
+            return {};
         }
 
         std::future<void> Update(const DbArray<double>& array);
@@ -39,8 +41,10 @@ namespace RPS::WebApi
         requires std::same_as<typename std::decay_t<TCollection>::value_type, DbArray<double>>
         std::future<void> Update(TCollection&& arrays)
         {
+            std::list<std::future<void>> tasks;
             for (const DbArray<double>& array : arrays)
                 Update(array);
+            return {};
         }
 
         std::future<void> Delete(const DbArray<double>& array);
@@ -49,8 +53,10 @@ namespace RPS::WebApi
         requires std::same_as<typename std::decay_t<TCollection>::value_type, DbArray<double>>
         std::future<void> Delete(TCollection&& arrays)
         {
+            std::list<std::future<void>> tasks;
             for (const DbArray<double>& array : arrays)
-                Delete(array);
+                tasks.push_back(Delete(array));
+            return {};
         }
     };
 }

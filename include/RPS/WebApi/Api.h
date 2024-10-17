@@ -2,6 +2,7 @@
 #define RPS_WebApi_Api_H
 
 #include <QtHttpServer>
+#include <ExtendedCpp/DI.h>
 
 #include "RPS/WebApi/Storage.h"
 #include "RPS/WebApi/DataContext.h"
@@ -12,9 +13,10 @@ namespace RPS::WebApi
     {
     private:
         QHttpServer _httpServer;
+        QTcpServer _tcpserver;
 
     public:
-        Api(const Storage::Ptr& storage, const DataContext::Ptr& dataContext);
+        explicit Api(const ExtendedCpp::DI::ServiceProvider& serverProvider);
     };
 }
 
