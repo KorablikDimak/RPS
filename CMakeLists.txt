@@ -34,6 +34,10 @@ qt_add_executable(WebApi ${WebApi_INCLUDES} ${WebApi_SOURCE})
 target_link_libraries(WebApi PRIVATE Qt6::HttpServer libpqxx::pqxx ExtendedCpp::LINQ ExtendedCpp::Json ExtendedCpp::DI)
 target_add_content(WebApi settings.json)
 
+if(APPLE)
+    target_link_options(WebApi PRIVATE -framework CoreFoundation)
+endif()
+
 set(Application_INCLUDES
         include/RPS/Application/MainWindow.h)
 

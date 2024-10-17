@@ -5,18 +5,33 @@
 #include <sstream>
 
 #include <ExtendedCpp/Json.h>
+#ifdef __APPLE__
+    #include <CoreFoundation/CFBundle.h>
+#endif
 
 #include "RPS/WebApi/Storage.h"
 
-RPS::WebApi::Storage::Storage(const std::string& filePath)
+RPS::WebApi::Storage::Storage(const std::string& fileName)
 {
+#ifdef __APPLE__
+    CFURLRef resourceURL = CFBundleCopyResourcesDirectoryURL(CFBundleGetMainBundle());
+    char resourcePath[PATH_MAX];
+    if (CFURLGetFileSystemRepresentation(resourceURL, true, reinterpret_cast<UInt8*>(resourcePath), PATH_MAX))
+    {
+        if (resourceURL != nullptr)
+            CFRelease(resourceURL);
+    }
+    std::filesystem::path path(std::string(resourcePath) + "/" + fileName);
+#else
     std::filesystem::path path(filePath);
-    if (!exists(path))
-        throw std::invalid_argument(std::format("File {} does not exist.", filePath));
+#endif
 
-    std::ifstream file(filePath);
+    if (!exists(path))
+        throw std::invalid_argument(std::format("File {} does not exist.", path.string()));
+
+    std::ifstream file(path.string());
     if (!file.is_open())
-        throw std::runtime_error(std::format("File {} can not be opened in read mode.", filePath));
+        throw std::runtime_error(std::format("File {} can not be opened in read mode.", path.string()));
 
     std::ostringstream stream;
     std::string line;
@@ -32,7 +47,7 @@ RPS::WebApi::Storage::Storage(const std::string& filePath)
     }
     catch (const ExtendedCpp::Json::parse_error& ex)
     {
-        throw std::runtime_error(std::format("{} has incorrect json format file. Detailed: {}.", filePath, ex.what()));
+        throw std::runtime_error(std::format("{} has incorrect json format file. Detailed: {}.", path.string(), ex.what()));
     }
 }
 
