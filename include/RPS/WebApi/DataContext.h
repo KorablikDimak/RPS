@@ -2,6 +2,7 @@
 #define RPS_WebApi_DataContext_H
 
 #include <future>
+#include <optional>
 
 #include <ExtendedCpp/LINQ/Concepts.h>
 
@@ -20,13 +21,14 @@ namespace RPS::WebApi
 
         explicit DataContext(const DbProvider::DbProvider::Ptr& dbProvider) noexcept;
 
-        std::future<DbArray<double>> Get(std::int64_t id);
+        std::future<std::optional<DbArray<double>>> Get(std::int64_t id);
         std::future<std::vector<DbArray<double>>> Get();
 
         std::future<void> Add(const DbArray<double>& array);
 
-        template<ExtendedCpp::LINQ::Concepts::Iterable TCollection>
-        requires std::same_as<typename std::decay_t<TCollection>::value_type, DbArray<double>>
+        template<typename TCollection>
+        requires std::same_as<typename std::decay_t<TCollection>::value_type, DbArray<double>> &&
+                 ExtendedCpp::LINQ::Concepts::Iterable<std::decay_t<TCollection>>
         std::future<void> Add(TCollection&& arrays)
         {
             std::list<std::future<void>> tasks;
@@ -37,8 +39,9 @@ namespace RPS::WebApi
 
         std::future<void> Update(const DbArray<double>& array);
 
-        template<ExtendedCpp::LINQ::Concepts::Iterable TCollection>
-        requires std::same_as<typename std::decay_t<TCollection>::value_type, DbArray<double>>
+        template<typename TCollection>
+        requires std::same_as<typename std::decay_t<TCollection>::value_type, DbArray<double>> &&
+                 ExtendedCpp::LINQ::Concepts::Iterable<std::decay_t<TCollection>>
         std::future<void> Update(TCollection&& arrays)
         {
             std::list<std::future<void>> tasks;
@@ -49,8 +52,9 @@ namespace RPS::WebApi
 
         std::future<void> Delete(const DbArray<double>& array);
 
-        template<ExtendedCpp::LINQ::Concepts::Iterable TCollection>
-        requires std::same_as<typename std::decay_t<TCollection>::value_type, DbArray<double>>
+        template<typename TCollection>
+        requires std::same_as<typename std::decay_t<TCollection>::value_type, DbArray<double>> &&
+                 ExtendedCpp::LINQ::Concepts::Iterable<std::decay_t<TCollection>>
         std::future<void> Delete(TCollection&& arrays)
         {
             std::list<std::future<void>> tasks;

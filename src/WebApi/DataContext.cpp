@@ -10,14 +10,16 @@ RPS::WebApi::DataContext::DataContext(const DbProvider::DbProvider::Ptr& dbProvi
     _dbProvider = dbProvider;
 }
 
-std::future<RPS::WebApi::DbArray<double>> RPS::WebApi::DataContext::Get(std::int64_t id)
+std::future<std::optional<RPS::WebApi::DbArray<double>>> RPS::WebApi::DataContext::Get(std::int64_t id)
 {
-    return _dbProvider->TransactAsync([](pqxx::work& work, const std::int64_t id)->DbArray<double>
+    return _dbProvider->TransactAsync([](pqxx::work& work, const std::int64_t id)->std::optional<DbArray<double>>
     {
         const std::string query = std::format("SELECT * FROM Arrays WHERE id = {}", id);
         const pqxx::result result = work.exec(std::move(query));
-        const pqxx::row row = result.front();
+        if (result.empty())
+            return std::nullopt;
 
+        const pqxx::row row = result.front();
         DbArray<double> array;
         FromDbRow(row, array);
         return array;
@@ -41,7 +43,6 @@ std::future<void> RPS::WebApi::DataContext::Add(const DbArray<double>& array)
 {
     return _dbProvider->TransactAsync([](pqxx::work& work, const DbArray<double>& array)
     {
-
         std::string query = std::format("INSERT INTO Arrays (inner_array, is_sorted) VALUES ({},{})",
                                         DbUtility::ToString(array.inner_array), array.is_sorted);
         work.exec(std::move(query));

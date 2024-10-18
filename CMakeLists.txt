@@ -6,7 +6,11 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(DEPLOY_QT OFF)
+if(APPLE)
+    option(DEPLOY_QT OFF)
+elseif(WIN32)
+    option(DEPLOY_QT ON)
+endif()
 
 find_package(ExtendedCPP REQUIRED)
 find_package(libpqxx REQUIRED)
