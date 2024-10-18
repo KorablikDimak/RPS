@@ -7,9 +7,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if(APPLE)
-    option(DEPLOY_QT OFF)
+    option(DEPLOY_QT "Deploy qt executables" OFF)
 elseif(WIN32)
-    option(DEPLOY_QT ON)
+    option(DEPLOY_QT "Deploy qt executables" ON)
 endif()
 
 find_package(ExtendedCPP REQUIRED)
@@ -45,17 +45,25 @@ if(APPLE)
 endif()
 
 set(Application_INCLUDES
-        include/RPS/Application/MainWindow.h)
+        include/RPS/Application/Utility.h
+        include/RPS/Application/MainWindow.h
+        include/RPS/Application/EditArrayWindow.h
+        include/RPS/Application/AddArrayWindow.h)
 
 set(Application_SOURCE
+        src/Application/main.cpp
         src/Application/MainWindow.cpp
-        src/Application/main.cpp)
+        src/Application/EditArrayWindow.cpp
+        src/Application/Utility.cpp
+        src/Application/AddArrayWindow.cpp)
 
 set(Application_UI
-        src/Application/MainWindow.ui)
+        src/Application/MainWindow.ui
+        src/Application/EditArrayWindow.ui
+        src/Application/AddArrayWindow.ui)
 
 qt_add_executable(Application ${Application_INCLUDES} ${Application_SOURCE} ${Application_UI})
-target_link_libraries(Application PRIVATE Qt6::Widgets)
+target_link_libraries(Application PRIVATE Qt6::Widgets ExtendedCpp::LINQ)
 
 set_private_include_directories(WebApi Application)
 set_platform_properties(WebApi Application)
