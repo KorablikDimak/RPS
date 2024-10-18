@@ -23,7 +23,7 @@ RPS::WebApi::Storage::Storage(const std::string& fileName)
     }
     std::filesystem::path path(std::string(resourcePath) + "/" + fileName);
 #else
-    std::filesystem::path path(filePath);
+    std::filesystem::path path(fileName);
 #endif
 
     if (!exists(path))

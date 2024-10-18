@@ -18,8 +18,8 @@ function(deploy_qt)
             set_target_properties(${target} PROPERTIES
                     WIN32_EXECUTABLE TRUE)
             add_custom_command(TARGET ${target} POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E
-                    env PATH=${_qt_bin_dir}${DEPLOYQT_EXECUTABLE}
+                    COMMAND "${CMAKE_COMMAND}" -E
+                    env PATH="${_qt_bin_dir}" "${DEPLOYQT_EXECUTABLE}"
                     --no-compiler-runtime
                     $<TARGET_FILE:${target}>)
         endforeach()
