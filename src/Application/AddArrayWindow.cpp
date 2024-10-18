@@ -24,7 +24,7 @@ namespace RPS::Application
         if (!_ui->ArrayEdit->toPlainText().isEmpty() &&
             Utility::IsNumberArray(Utility::SplitString(_ui->ArrayEdit->toPlainText().toStdString())))
         {
-            emit Saved(_ui->ArrayEdit->toPlainText());
+            emit SaveClicked(_ui->ArrayEdit->toPlainText());
         }
 
         this->close();

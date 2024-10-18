@@ -23,7 +23,7 @@ std::vector<std::string> RPS::Application::Utility::SplitString(std::string&& sr
     return tokens;
 }
 
-bool IsNumberArray(const std::vector<std::string>& src) noexcept
+bool RPS::Application::Utility::IsNumberArray(const std::vector<std::string>& src) noexcept
 {
     return ExtendedCpp::LINQ::From(src).All([](const std::string& element) noexcept
     {
@@ -32,11 +32,11 @@ bool IsNumberArray(const std::vector<std::string>& src) noexcept
             [[maybe_unused]] auto _ = std::stod(element);
             return true;
         }
-        catch (const std::invalid_argument& ex)
+        catch (const std::invalid_argument&)
         {
             return false;
         }
-        catch (const std::out_of_range& ex)
+        catch (const std::out_of_range&)
         {
             return false;
         }

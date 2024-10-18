@@ -9,6 +9,7 @@ namespace RPS::Application
             QWidget(parent), _ui(new Ui::MainWindow)
     {
         _ui->setupUi(this);
+        _networkManager = new QNetworkAccessManager();
         if (!connect(_ui->ArrayList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this,
                      SLOT(ListWidgetItemClicked(QListWidgetItem*))))
             std::terminate();
@@ -19,13 +20,17 @@ namespace RPS::Application
     MainWindow::~MainWindow()
     {
         delete _ui;
+        delete _networkManager;
     }
 
     void MainWindow::ListWidgetItemClicked(QListWidgetItem* arrayItem) noexcept
     {
         auto* editArrayWindow = new EditArrayWindow(arrayItem->text());
-        if (!connect(editArrayWindow, &EditArrayWindow::Saved, this,
+        if (!connect(editArrayWindow, &EditArrayWindow::SaveClicked, this,
                      [this, arrayItem](const QString& arrayText){ UpdateItem(arrayText, _ui->ArrayList->row(arrayItem)); }))
+            std::terminate();
+        if (!connect(editArrayWindow, &EditArrayWindow::SortClicked, this,
+                     [this, arrayItem](const QString& arrayText){ UpdateItem(arrayText, _ui->ArrayList->row(arrayItem));}))
             std::terminate();
         editArrayWindow->show();
     }
@@ -33,7 +38,7 @@ namespace RPS::Application
     void MainWindow::AddArrayButtonClicked() noexcept
     {
         auto* addArrayWindow = new AddArrayWindow();
-        if (!connect(addArrayWindow, SIGNAL(Saved(QString)), this, SLOT(AddNewItem(QString))))
+        if (!connect(addArrayWindow, SIGNAL(SaveClicked(QString)), this, SLOT(AddNewItem(QString))))
             std::terminate();
         addArrayWindow->show();
     }
@@ -58,5 +63,10 @@ namespace RPS::Application
         QFont font = _ui->ArrayList->item(0)->font();
         font.setPointSize(14);
         _ui->ArrayList->item(_ui->ArrayList->count() - 1)->setFont(font);
+    }
+
+    void MainWindow::SortArray() noexcept
+    {
+
     }
 }

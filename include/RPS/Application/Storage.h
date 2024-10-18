@@ -1,12 +1,12 @@
-#ifndef RPS_WebApi_Storage_H
-#define RPS_WebApi_Storage_H
+#ifndef RPS_Application_Storage_H
+#define RPS_Application_Storage_H
 
 #include <string>
 #include <map>
 #include <memory>
 #include <cstdint>
 
-namespace RPS::WebApi
+namespace RPS::Application
 {
     class Storage final
     {
@@ -19,7 +19,6 @@ namespace RPS::WebApi
         explicit Storage(const std::string& fileName);
         std::string Variable(const std::string& key);
 
-        std::string ConnectionString();
         std::string Host();
         std::uint16_t Port();
     };

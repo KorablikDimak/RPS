@@ -14,7 +14,7 @@ endif()
 
 find_package(ExtendedCPP REQUIRED)
 find_package(libpqxx REQUIRED)
-find_package(Qt6 REQUIRED COMPONENTS Core HttpServer Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Core HttpServer Widgets Network)
 qt_standard_project_setup()
 
 include(cmake/utils.cmake)
@@ -63,7 +63,12 @@ set(Application_UI
         src/Application/AddArrayWindow.ui)
 
 qt_add_executable(Application ${Application_INCLUDES} ${Application_SOURCE} ${Application_UI})
-target_link_libraries(Application PRIVATE Qt6::Widgets ExtendedCpp::LINQ)
+target_link_libraries(Application PRIVATE Qt6::Widgets Qt6::Network ExtendedCpp::LINQ ExtendedCpp::Json)
+target_add_content(Application settings.json)
+
+if(APPLE)
+    target_link_options(WebApi PRIVATE -framework CoreFoundation)
+endif()
 
 set_private_include_directories(WebApi Application)
 set_platform_properties(WebApi Application)

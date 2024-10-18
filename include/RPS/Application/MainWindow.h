@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QListWidgetItem>
+#include <QtNetwork/QNetworkAccessManager>
 
 namespace RPS::Application
 {
@@ -23,12 +24,15 @@ namespace RPS::Application
 
     private:
         Ui::MainWindow* _ui;
+        QNetworkAccessManager* _networkManager;
+        std::map<int, std::int64_t> mappedId;
 
     private slots:
         void ListWidgetItemClicked(QListWidgetItem* arrayItem) noexcept;
         void AddArrayButtonClicked() noexcept;
         void UpdateItem(const QString& arrayText, int row) noexcept;
         void AddNewItem(const QString& arrayText) noexcept;
+        void SortArray() noexcept;
     };
 }
 

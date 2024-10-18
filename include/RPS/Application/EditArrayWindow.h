@@ -21,7 +21,8 @@ namespace RPS::Application
         ~EditArrayWindow() override;
 
     signals:
-        void Saved(const QString& arrayText);
+        void SaveClicked(const QString& arrayText);
+        void SortClicked(const QString& arrayText);
 
     private:
         Ui::EditArrayWindow* _ui;

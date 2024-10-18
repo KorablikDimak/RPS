@@ -27,7 +27,7 @@ namespace RPS::Application
     void EditArrayWindow::SaveButtonClicked() noexcept
     {
         if (Utility::IsNumberArray(Utility::SplitString(_ui->ArrayEdit->toPlainText().toStdString())))
-            emit Saved(_ui->ArrayEdit->toPlainText());
+            emit SaveClicked(_ui->ArrayEdit->toPlainText());
         this->close();
     }
 
@@ -38,12 +38,17 @@ namespace RPS::Application
 
     void EditArrayWindow::SortButtonClicked() noexcept
     {
-        // TODO Sort
+        if (!_ui->ArrayEdit->toPlainText().isEmpty() &&
+            Utility::IsNumberArray(Utility::SplitString(_ui->ArrayEdit->toPlainText().toStdString())))
+        {
+            emit SortClicked(_ui->ArrayEdit->toPlainText());
+            this->setEnabled(false);
+        }
     }
 
     void EditArrayWindow::DeleteButtonClicked() noexcept
     {
-        emit Saved("");
+        emit SaveClicked("");
         this->close();
     }
 }

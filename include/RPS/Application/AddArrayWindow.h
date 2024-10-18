@@ -21,7 +21,7 @@ namespace RPS::Application
         ~AddArrayWindow() override;
 
     signals:
-        void Saved(const QString& arrayText);
+        void SaveClicked(const QString& arrayText);
 
     private:
         Ui::AddArrayWindow* _ui;
