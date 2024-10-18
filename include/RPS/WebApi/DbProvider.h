@@ -3,7 +3,7 @@
 
 #include <future>
 
-#include "RPS/WebApi/DbPool.h"
+#include "DbPool.h"
 
 namespace RPS::WebApi
 {

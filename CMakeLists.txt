@@ -6,12 +6,14 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+option(DEPLOY_QT OFF)
+
 find_package(ExtendedCPP REQUIRED)
 find_package(libpqxx REQUIRED)
 find_package(Qt6 REQUIRED COMPONENTS Core HttpServer Widgets)
 qt_standard_project_setup()
 
-include(cmake/utility.cmake)
+include(cmake/utils.cmake)
 
 set(WebApi_INCLUDES
         include/RPS/WebApi/Api.h
@@ -52,4 +54,8 @@ qt_add_executable(Application ${Application_INCLUDES} ${Application_SOURCE} ${Ap
 target_link_libraries(Application PRIVATE Qt6::Widgets)
 
 set_private_include_directories(WebApi Application)
-deploy_qt(WebApi Application)
+set_platform_properties(WebApi Application)
+
+if(DEPLOY_QT)
+    deploy_qt(WebApi Application)
+endif()

@@ -2,8 +2,8 @@
 
 #include <ExtendedCpp/LINQ.h>
 
-#include "RPS/WebApi/DataContext.h"
-#include "RPS/WebApi/DbUtility.h"
+#include "DataContext.h"
+#include "DbUtility.h"
 
 RPS::WebApi::DataContext::DataContext(const DbProvider::DbProvider::Ptr& dbProvider) noexcept
 {

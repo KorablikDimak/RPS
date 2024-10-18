@@ -4,8 +4,8 @@
 #include <QtHttpServer>
 #include <ExtendedCpp/DI.h>
 
-#include "RPS/WebApi/Storage.h"
-#include "RPS/WebApi/DataContext.h"
+#include "Storage.h"
+#include "DataContext.h"
 
 namespace RPS::WebApi
 {

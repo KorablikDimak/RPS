@@ -9,7 +9,7 @@
     #include <CoreFoundation/CFBundle.h>
 #endif
 
-#include "RPS/WebApi/Storage.h"
+#include "Storage.h"
 
 RPS::WebApi::Storage::Storage(const std::string& fileName)
 {

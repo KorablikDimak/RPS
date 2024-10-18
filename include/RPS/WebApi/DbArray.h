@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "RPS/WebApi/DbMacros.h"
+#include "DbMacros.h"
 
 namespace RPS::WebApi
 {

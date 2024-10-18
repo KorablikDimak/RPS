@@ -1,11 +1,11 @@
 #include <QtCore>
 #include <ExtendedCpp/DI.h>
 
-#include "RPS/WebApi/Storage.h"
-#include "RPS/WebApi/Api.h"
-#include "RPS/WebApi/DbPool.h"
-#include "RPS/WebApi/DbProvider.h"
-#include "RPS/WebApi/DataContext.h"
+#include "Storage.h"
+#include "Api.h"
+#include "DbPool.h"
+#include "DbProvider.h"
+#include "DataContext.h"
 
 int main(int argc, char *argv[])
 {

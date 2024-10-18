@@ -1,4 +1,4 @@
-#include "RPS/Application/MainWindow.h"
+#include "MainWindow.h"
 #include "ui_MainWindow.h"
 
 namespace RPS

@@ -5,8 +5,8 @@
 
 #include <ExtendedCpp/LINQ/Concepts.h>
 
-#include "RPS/WebApi/DbProvider.h"
-#include "RPS/WebApi/DbArray.h"
+#include "DbProvider.h"
+#include "DbArray.h"
 
 namespace RPS::WebApi
 {

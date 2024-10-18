@@ -1,6 +1,6 @@
 #include <thread>
 
-#include "RPS/WebApi/DbPool.h"
+#include "DbPool.h"
 
 RPS::WebApi::DbPool::DbPool(const std::string& connectionString, const unsigned char pollSize) noexcept
 {

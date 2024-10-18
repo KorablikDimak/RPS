@@ -1,6 +1,6 @@
 #include <QApplication>
 
-#include "RPS/Application/MainWindow.h"
+#include "MainWindow.h"
 
 int main(int argc, char *argv[])
 {

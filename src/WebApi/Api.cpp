@@ -2,7 +2,7 @@
 #include <iostream>
 #include <format>
 
-#include "RPS/WebApi/Api.h"
+#include "Api.h"
 
 RPS::WebApi::Api::Api(const ExtendedCpp::DI::ServiceProvider& serverProvider)
 {
