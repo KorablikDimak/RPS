@@ -21,13 +21,13 @@ namespace RPS::Application
     Q_OBJECT
 
     public:
-        explicit MainWindow(const Repository<Array<double>>& repository,
+        explicit MainWindow(const Repository<Array<double>>* repository,
                             QWidget* parent = nullptr) noexcept;
         ~MainWindow() override;
 
     private:
         Ui::MainWindow* _ui;
-        Repository<Array<double>> _repository;
+        const Repository<Array<double>>* _repository;
         std::map<int, Array<double>> _arrays;
 
     public slots:

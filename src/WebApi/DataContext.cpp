@@ -53,7 +53,7 @@ std::future<void> RPS::WebApi::DataContext::Update(const DbArray<double>& array)
 {
     return _dbProvider->TransactAsync([](pqxx::work& work, const DbArray<double>& array)
     {
-        const std::string query = std::format("UPDATE Arrays SET (inner_array) VALUES ({}) WHERE id = {}",
+        const std::string query = std::format("UPDATE Arrays SET inner_array = {} WHERE id = {}",
                                               DbUtility::ToString(array.inner_array),
                                               array.id);
         work.exec(query);
@@ -64,7 +64,7 @@ std::future<void> RPS::WebApi::DataContext::Delete(const DbArray<double>& array)
 {
     return _dbProvider->TransactAsync([](pqxx::work& work, const DbArray<double>& array)
     {
-        const std::string query = std::format("DELETE FROM \"Arrays\" WHERE id = {}", array.id);
+        const std::string query = std::format("DELETE FROM Arrays WHERE id = {}", array.id);
         work.exec(query);
     }, array);
 }

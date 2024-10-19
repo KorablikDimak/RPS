@@ -20,7 +20,7 @@ namespace RPS::Application
     Q_OBJECT
 
     public:
-        explicit EditArrayWindow(const Repository<Array<double>>& repository,
+        explicit EditArrayWindow(const Repository<Array<double>>* repository,
                                  const Array<double>& array, QWidget* parent = nullptr) noexcept;
         ~EditArrayWindow() override;
 
@@ -30,7 +30,7 @@ namespace RPS::Application
     private:
         Ui::EditArrayWindow* _ui;
         Array<double> _array;
-        Repository<Array<double>> _repository;
+        const Repository<Array<double>>* _repository;
 
     private slots:
         void SaveButtonClicked() noexcept;

@@ -8,7 +8,7 @@ std::vector<std::string> RPS::Application::Utility::SplitString(const std::strin
     std::vector<std::string> tokens;
     std::istringstream stream(src);
     std::string part;
-    while (std::getline(stream, part))
+    while (std::getline(stream, part, ' '))
         tokens.push_back(std::move(part));
     return tokens;
 }
@@ -18,7 +18,7 @@ std::vector<std::string> RPS::Application::Utility::SplitString(std::string&& sr
     std::vector<std::string> tokens;
     std::istringstream stream(std::move(src));
     std::string part;
-    while (std::getline(stream, part))
+    while (std::getline(stream, part, ' '))
         tokens.push_back(std::move(part));
     return tokens;
 }

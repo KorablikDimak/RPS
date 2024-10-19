@@ -4,6 +4,7 @@
 #include <QtNetwork/QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QByteArray>
+#include <QEventLoop>
 #include <ExtendedCpp/Json.h>
 
 #include "Storage.h"
@@ -17,7 +18,8 @@ namespace RPS::Application
         explicit Repository(const Storage& storage) noexcept
         {
             _networkManager = new QNetworkAccessManager();
-            _serverAddress = "http://" + QString(storage.Host().c_str()) + ":" + QString(storage.Port()) + "/";
+            _serverAddress = "http://" + QString(storage.Host().c_str()) + ":" +
+                             QString(std::to_string(storage.Port()).c_str()) + "/";
         }
 
         ~Repository()
@@ -26,11 +28,16 @@ namespace RPS::Application
         }
 
         [[nodiscard]]
-        std::vector<T> Get() const noexcept
+        std::vector<T> Get() const
         {
             QNetworkRequest request;
             request.setUrl(QUrl(_serverAddress + "Get"));
             QNetworkReply* reply = _networkManager->get(request);
+
+            QEventLoop eventLoop;
+            QObject::connect(reply, &QNetworkReply::finished, &eventLoop, &QEventLoop::quit);
+            eventLoop.exec();
+
             const auto json = ExtendedCpp::Json::parse(reply->readAll().toStdString());
             return json.get<std::vector<T>>();
         }
@@ -41,8 +48,11 @@ namespace RPS::Application
             request.setUrl(QUrl(_serverAddress + "Add"));
             request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
             const ExtendedCpp::Json jsonRequest = data;
-            _networkManager->post(request, QByteArray(jsonRequest.dump().c_str(),
-                                                      static_cast<qsizetype>(jsonRequest.dump().size())));
+            QNetworkReply* reply = _networkManager->post(request, QByteArray(jsonRequest.dump().c_str(),
+                                                         static_cast<qsizetype>(jsonRequest.dump().size())));
+            QEventLoop eventLoop;
+            QObject::connect(reply, &QNetworkReply::finished, &eventLoop, &QEventLoop::quit);
+            eventLoop.exec();
         }
 
         void Update(const T& data) const noexcept
@@ -51,8 +61,11 @@ namespace RPS::Application
             request.setUrl(QUrl(_serverAddress + "Update"));
             request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
             const ExtendedCpp::Json jsonRequest = data;
-            _networkManager->post(request, QByteArray(jsonRequest.dump().c_str(),
-                                                      static_cast<qsizetype>(jsonRequest.dump().size())));
+            QNetworkReply* reply = _networkManager->post(request, QByteArray(jsonRequest.dump().c_str(),
+                                                         static_cast<qsizetype>(jsonRequest.dump().size())));
+            QEventLoop eventLoop;
+            QObject::connect(reply, &QNetworkReply::finished, &eventLoop, &QEventLoop::quit);
+            eventLoop.exec();
         }
 
         void Delete(const T& data) const noexcept
@@ -61,8 +74,11 @@ namespace RPS::Application
             request.setUrl(QUrl(_serverAddress + "Delete"));
             request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
             const ExtendedCpp::Json jsonRequest = data;
-            _networkManager->post(request, QByteArray(jsonRequest.dump().c_str(),
-                                                      static_cast<qsizetype>(jsonRequest.dump().size())));
+            QNetworkReply* reply = _networkManager->post(request, QByteArray(jsonRequest.dump().c_str(),
+                                                         static_cast<qsizetype>(jsonRequest.dump().size())));
+            QEventLoop eventLoop;
+            QObject::connect(reply, &QNetworkReply::finished, &eventLoop, &QEventLoop::quit);
+            eventLoop.exec();
         }
 
         T Sort(const T& data) const noexcept
@@ -73,6 +89,11 @@ namespace RPS::Application
             const ExtendedCpp::Json jsonRequest = data;
             QNetworkReply* reply = _networkManager->post(request, QByteArray(jsonRequest.dump().c_str(),
                                                          static_cast<qsizetype>(jsonRequest.dump().size())));
+
+            QEventLoop eventLoop;
+            QObject::connect(reply, &QNetworkReply::finished, &eventLoop, &QEventLoop::quit);
+            eventLoop.exec();
+
             const auto json = ExtendedCpp::Json::parse(reply->readAll().toStdString());
             return json.get<T>();
         }

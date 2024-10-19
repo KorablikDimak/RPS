@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 
     const RPS::Application::Storage storage("settings.json");
     const RPS::Application::Repository<RPS::Application::Array<double>> repository(storage);
-    RPS::Application::MainWindow window(repository);
+    RPS::Application::MainWindow window(&repository);
 
     window.show();
     return QApplication::exec();
