@@ -11,7 +11,7 @@
 namespace RPS::Application
 {
     template<typename T>
-    class Repository
+    class Repository final
     {
     public:
         explicit Repository(const Storage& storage) noexcept

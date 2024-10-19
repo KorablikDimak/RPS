@@ -50,7 +50,8 @@ set(Application_INCLUDES
         include/RPS/Application/EditArrayWindow.h
         include/RPS/Application/AddArrayWindow.h
         include/RPS/Application/Array.h
-        include/RPS/Application/Repository.h)
+        include/RPS/Application/Repository.h
+        include/RPS/Application/Storage.h)
 
 set(Application_SOURCE
         src/Application/main.cpp
@@ -58,7 +59,7 @@ set(Application_SOURCE
         src/Application/EditArrayWindow.cpp
         src/Application/Utility.cpp
         src/Application/AddArrayWindow.cpp
-        include/RPS/Application/Repository.h)
+        src/Application/Storage.cpp)
 
 set(Application_UI
         src/Application/MainWindow.ui
