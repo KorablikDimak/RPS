@@ -1,5 +1,3 @@
-#include <sstream>
-
 #include <ExtendedCpp/LINQ.h>
 
 #include "MainWindow.h"
@@ -9,14 +7,15 @@
 
 namespace RPS::Application
 {
-    MainWindow::MainWindow(const Api& api, QWidget* parent) noexcept :
-            QWidget(parent), _ui(new Ui::MainWindow), _api(api)
+    MainWindow::MainWindow(const Repository<Array<double>>& repository, QWidget* parent) noexcept :
+            QWidget(parent), _ui(new Ui::MainWindow), _repository(repository)
     {
         _ui->setupUi(this);
         if (!connect(_ui->ArrayList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this,
                      SLOT(ListWidgetItemClicked(QListWidgetItem*))))
             std::terminate();
-        if (!connect(_ui->AddArrayButton, SIGNAL(clicked()), this, SLOT(AddArrayButtonClicked())))
+        if (!connect(_ui->AddArrayButton, SIGNAL(clicked()), this,
+                     SLOT(AddArrayButtonClicked())))
             std::terminate();
     }
 
@@ -27,67 +26,32 @@ namespace RPS::Application
 
     void MainWindow::UpdateWindow() noexcept
     {
-        std::vector<Array<double>> arrays = _api.GetArrays();
+        std::vector<Array<double>> arrays = _repository.Get();
         _ui->ArrayList->clear();
-        _arrays.clear();
 
-        for (const auto& stringArray : arrays)
+        int count = 0;
+        for (const auto& array : arrays)
         {
-            QString array = ExtendedCpp::LINQ::From(stringArray.inner_array)
+            QString arrayText = ExtendedCpp::LINQ::From(array.inner_array)
                     .Select([](double number){ return std::to_string(number); })
-                    .Aggregate<std::string>([](std::string result, const std::string& array)
-                                            { result += array; return result; }).c_str();
-
-            // TODO add item
+                    .Aggregate<std::string>([](std::string result, const std::string& number)
+                                            { result += number; return result; }).c_str();
+            _ui->ArrayList->addItem(arrayText);
+            _arrays.insert(std::make_pair(count, array));
+            ++count;
         }
     }
 
     void MainWindow::ListWidgetItemClicked(QListWidgetItem* arrayItem) noexcept
     {
-        auto* editArrayWindow = new EditArrayWindow(arrayItem->text());
-        if (!connect(editArrayWindow, &EditArrayWindow::SaveClicked, this,
-                     [this, arrayItem](const QString& arrayText){ UpdateItem(arrayText, _ui->ArrayList->row(arrayItem)); }))
-            std::terminate();
-        if (!connect(editArrayWindow, &EditArrayWindow::SortClicked, this,
-                     [this, arrayItem](const QString& arrayText)
-                     { UpdateItem(arrayText, _ui->ArrayList->row(arrayItem));
-                       SortArray(_ui->ArrayList->row(arrayItem)); }))
-            std::terminate();
+        auto* editArrayWindow = new EditArrayWindow(_repository,
+                                                    _arrays.at(_ui->ArrayList->row(arrayItem)));
         editArrayWindow->show();
     }
 
     void MainWindow::AddArrayButtonClicked() noexcept
     {
-        auto* addArrayWindow = new AddArrayWindow();
-        if (!connect(addArrayWindow, SIGNAL(SaveClicked(QString)), this, SLOT(AddNewItem(QString))))
-            std::terminate();
+        auto* addArrayWindow = new AddArrayWindow(_repository);
         addArrayWindow->show();
-    }
-
-    void MainWindow::UpdateItem(const QString &arrayText, const int row) noexcept
-    {
-        if (arrayText.isEmpty())
-        {
-            _ui->ArrayList->removeItemWidget(_ui->ArrayList->item(row));
-            delete _ui->ArrayList->item(row);
-        }
-        else
-            _ui->ArrayList->item(row)->setText(arrayText);
-    }
-
-    void MainWindow::AddNewItem(const QString& arrayText) noexcept
-    {
-        _ui->ArrayList->addItem(arrayText);
-        _ui->ArrayList->item(_ui->ArrayList->count() - 1)
-            ->setSizeHint(QSize(_ui->ArrayList->item(0)->sizeHint().width(), 40));
-
-        QFont font = _ui->ArrayList->item(0)->font();
-        font.setPointSize(14);
-        _ui->ArrayList->item(_ui->ArrayList->count() - 1)->setFont(font);
-    }
-
-    void MainWindow::SortArray([[maybe_unused]] const int row) noexcept
-    {
-
     }
 }

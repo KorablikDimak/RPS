@@ -26,6 +26,8 @@ namespace RPS::WebApi
         std::string Host() const;
         [[nodiscard]]
         std::uint16_t Port() const;
+        [[nodiscard]]
+        unsigned char PoolSize() const;
     };
 }
 

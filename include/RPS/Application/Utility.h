@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <QString>
 
 namespace RPS::Application::Utility
 {

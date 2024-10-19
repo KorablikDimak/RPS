@@ -72,3 +72,8 @@ std::uint16_t RPS::WebApi::Storage::Port() const
 {
     return static_cast<std::uint16_t>(std::stoul(Variable("port")));
 }
+
+unsigned char RPS::WebApi::Storage::PoolSize() const
+{
+    return static_cast<unsigned char>(std::stoul(Variable("pool-size")));
+}

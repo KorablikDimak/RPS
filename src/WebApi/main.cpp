@@ -19,7 +19,8 @@ int main(int argc, char *argv[])
 
     serviceProvider.AddSingleton<RPS::WebApi::DbPool>(
             [](const ExtendedCpp::DI::ServiceProvider& provider)
-            { return std::make_shared<RPS::WebApi::DbPool>(provider.GetServiceRequired<RPS::WebApi::Storage>()->ConnectionString(), 2); });
+            { return std::make_shared<RPS::WebApi::DbPool>(provider.GetServiceRequired<RPS::WebApi::Storage>()->ConnectionString(),
+                                                           provider.GetServiceRequired<RPS::WebApi::Storage>()->PoolSize()); });
 
     serviceProvider.AddTransient<RPS::WebApi::DbProvider>(
             [](const ExtendedCpp::DI::ServiceProvider& provider)

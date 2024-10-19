@@ -1,14 +1,23 @@
+#include <ExtendedCpp/LINQ.h>
+
 #include "EditArrayWindow.h"
 #include "ui_EditArrayWindow.h"
 #include "Utility.h"
 
 namespace RPS::Application
 {
-    EditArrayWindow::EditArrayWindow(const QString& editText, QWidget* parent) noexcept :
-            QDialog(parent), _ui(new Ui::EditArrayWindow)
+    EditArrayWindow::EditArrayWindow(const Repository<Array<double>>& repository,
+                                     const Array<double>& array, QWidget* parent) noexcept :
+            QDialog(parent), _ui(new Ui::EditArrayWindow), _array(array), _repository(repository)
     {
         _ui->setupUi(this);
-        _ui->ArrayEdit->setPlainText(editText);
+
+        QString arrayText = ExtendedCpp::LINQ::From(_array.inner_array)
+                .Select([](double number){ return std::to_string(number); })
+                .Aggregate<std::string>([](std::string result, const std::string& number)
+                                        { result += number; return result; }).c_str();
+        _ui->ArrayEdit->setPlainText(arrayText);
+
         if (!connect(_ui->SaveButton, SIGNAL(clicked()), this, SLOT(SaveButtonClicked())))
             std::terminate();
         if (!connect(_ui->CancelButton, SIGNAL(clicked()), this, SLOT(CancelButtonClicked())))
@@ -26,8 +35,18 @@ namespace RPS::Application
 
     void EditArrayWindow::SaveButtonClicked() noexcept
     {
-        if (Utility::IsNumberArray(Utility::SplitString(_ui->ArrayEdit->toPlainText().toStdString())))
-            emit SaveClicked(_ui->ArrayEdit->toPlainText());
+        if (_ui->ArrayEdit->toPlainText().isEmpty())
+        {
+            _repository.Delete(_array);
+            emit Updated();
+        }
+        else if (Utility::IsNumberArray(Utility::SplitString(_ui->ArrayEdit->toPlainText().toStdString())))
+        {
+            _array.inner_array = Utility::ParseArray(Utility::SplitString(_ui->ArrayEdit->toPlainText().toStdString()));
+            _repository.Update(_array);
+            emit Updated();
+        }
+
         this->close();
     }
 
@@ -41,15 +60,21 @@ namespace RPS::Application
         if (!_ui->ArrayEdit->toPlainText().isEmpty() &&
             Utility::IsNumberArray(Utility::SplitString(_ui->ArrayEdit->toPlainText().toStdString())))
         {
-            emit SortClicked(_ui->ArrayEdit->toPlainText());
+            _array.inner_array = Utility::ParseArray(Utility::SplitString(_ui->ArrayEdit->toPlainText().toStdString()));
+            _array = _repository.Sort(_array);
+            QString arrayText = ExtendedCpp::LINQ::From(_array.inner_array)
+                    .Select([](double number){ return std::to_string(number); })
+                    .Aggregate<std::string>([](std::string result, const std::string& number)
+                                            { result += number; return result; }).c_str();
+            _ui->ArrayEdit->setPlainText(arrayText);
+            emit Updated();
         }
-
-        this->close();
     }
 
     void EditArrayWindow::DeleteButtonClicked() noexcept
     {
-        emit SaveClicked("");
+        _repository.Delete(_array);
+        emit Updated();
         this->close();
     }
 }

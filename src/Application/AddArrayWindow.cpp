@@ -4,8 +4,9 @@
 
 namespace RPS::Application
 {
-    AddArrayWindow::AddArrayWindow(QWidget* parent) noexcept :
-            QDialog(parent), _ui(new Ui::AddArrayWindow)
+    AddArrayWindow::AddArrayWindow(const Repository<Array<double>>& repository,
+                                   QWidget* parent) noexcept :
+            QDialog(parent), _ui(new Ui::AddArrayWindow), _repository(repository)
     {
         _ui->setupUi(this);
         if (!connect(_ui->SaveButton, SIGNAL(clicked()), this, SLOT(SaveButtonClicked())))
@@ -24,7 +25,10 @@ namespace RPS::Application
         if (!_ui->ArrayEdit->toPlainText().isEmpty() &&
             Utility::IsNumberArray(Utility::SplitString(_ui->ArrayEdit->toPlainText().toStdString())))
         {
-            emit SaveClicked(_ui->ArrayEdit->toPlainText());
+            Array<double> array;
+            array.inner_array = Utility::ParseArray(Utility::SplitString(_ui->ArrayEdit->toPlainText().toStdString()));
+            _repository.Add(array);
+            emit Updated();
         }
 
         this->close();

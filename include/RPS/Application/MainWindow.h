@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QListWidgetItem>
 
-#include "Api.h"
+#include "Repository.h"
 #include "Array.h"
 
 namespace RPS::Application
@@ -21,22 +21,21 @@ namespace RPS::Application
     Q_OBJECT
 
     public:
-        explicit MainWindow(const Api& api, QWidget* parent = nullptr) noexcept;
+        explicit MainWindow(const Repository<Array<double>>& repository,
+                            QWidget* parent = nullptr) noexcept;
         ~MainWindow() override;
 
     private:
         Ui::MainWindow* _ui;
-        Api _api;
+        Repository<Array<double>> _repository;
         std::map<int, Array<double>> _arrays;
 
+    public slots:
         void UpdateWindow() noexcept;
 
     private slots:
         void ListWidgetItemClicked(QListWidgetItem* arrayItem) noexcept;
         void AddArrayButtonClicked() noexcept;
-        void UpdateItem(const QString& arrayText, int row) noexcept;
-        void AddNewItem(const QString& arrayText) noexcept;
-        void SortArray(int row) noexcept;
     };
 }
 

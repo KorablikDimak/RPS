@@ -3,6 +3,9 @@
 
 #include <QDialog>
 
+#include "Repository.h"
+#include "Array.h"
+
 namespace RPS::Application
 {
     QT_BEGIN_NAMESPACE
@@ -17,15 +20,17 @@ namespace RPS::Application
     Q_OBJECT
 
     public:
-        explicit EditArrayWindow(const QString& editText, QWidget* parent = nullptr) noexcept;
+        explicit EditArrayWindow(const Repository<Array<double>>& repository,
+                                 const Array<double>& array, QWidget* parent = nullptr) noexcept;
         ~EditArrayWindow() override;
 
     signals:
-        void SaveClicked(const QString& arrayText);
-        void SortClicked(const QString& arrayText);
+        void Updated() const;
 
     private:
         Ui::EditArrayWindow* _ui;
+        Array<double> _array;
+        Repository<Array<double>> _repository;
 
     private slots:
         void SaveButtonClicked() noexcept;
