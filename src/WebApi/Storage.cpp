@@ -51,24 +51,24 @@ RPS::WebApi::Storage::Storage(const std::string& fileName)
     }
 }
 
-std::string RPS::WebApi::Storage::Variable(const std::string& key)
+std::string RPS::WebApi::Storage::Variable(const std::string& key) const
 {
     if (!_storage.contains(key))
         throw std::invalid_argument(std::format("Environment storage does not contains key {}", key));
     return _storage.at(key);
 }
 
-std::string RPS::WebApi::Storage::ConnectionString()
+std::string RPS::WebApi::Storage::ConnectionString() const
 {
     return Variable("connection-string");
 }
 
-std::string RPS::WebApi::Storage::Host()
+std::string RPS::WebApi::Storage::Host() const
 {
     return Variable("host");
 }
 
-std::uint16_t RPS::WebApi::Storage::Port()
+std::uint16_t RPS::WebApi::Storage::Port() const
 {
     return static_cast<std::uint16_t>(std::stoul(Variable("port")));
 }

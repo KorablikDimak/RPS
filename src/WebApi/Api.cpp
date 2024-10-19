@@ -54,7 +54,7 @@ RPS::WebApi::Api::Api(const ExtendedCpp::DI::ServiceProvider& serverProvider)
         }
     });
 
-    _httpServer.route("/Update", QHttpServerRequest::Method::Patch, [serverProvider](const QHttpServerRequest& request)
+    _httpServer.route("/Update", QHttpServerRequest::Method::Post, [serverProvider](const QHttpServerRequest& request)
     {
         try
         {
@@ -69,7 +69,7 @@ RPS::WebApi::Api::Api(const ExtendedCpp::DI::ServiceProvider& serverProvider)
         }
     });
 
-    _httpServer.route("/Update", QHttpServerRequest::Method::Patch, [serverProvider](const QHttpServerRequest& request)
+    _httpServer.route("/Update", QHttpServerRequest::Method::Post, [serverProvider](const QHttpServerRequest& request)
     {
         try
         {
@@ -84,7 +84,7 @@ RPS::WebApi::Api::Api(const ExtendedCpp::DI::ServiceProvider& serverProvider)
         }
     });
 
-    _httpServer.route("/Delete", QHttpServerRequest::Method::Delete, [serverProvider](const QHttpServerRequest& request)
+    _httpServer.route("/Delete", QHttpServerRequest::Method::Post, [serverProvider](const QHttpServerRequest& request)
     {
         try
         {
@@ -99,7 +99,7 @@ RPS::WebApi::Api::Api(const ExtendedCpp::DI::ServiceProvider& serverProvider)
         }
     });
 
-    _httpServer.route("/Delete", QHttpServerRequest::Method::Delete, [serverProvider](const QHttpServerRequest& request)
+    _httpServer.route("/Delete", QHttpServerRequest::Method::Post, [serverProvider](const QHttpServerRequest& request)
     {
         try
         {

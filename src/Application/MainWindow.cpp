@@ -1,3 +1,7 @@
+#include <sstream>
+
+#include <ExtendedCpp/LINQ.h>
+
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 #include "EditArrayWindow.h"
@@ -5,11 +9,10 @@
 
 namespace RPS::Application
 {
-    MainWindow::MainWindow(QWidget* parent) noexcept :
-            QWidget(parent), _ui(new Ui::MainWindow)
+    MainWindow::MainWindow(const Api& api, QWidget* parent) noexcept :
+            QWidget(parent), _ui(new Ui::MainWindow), _api(api)
     {
         _ui->setupUi(this);
-        _networkManager = new QNetworkAccessManager();
         if (!connect(_ui->ArrayList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this,
                      SLOT(ListWidgetItemClicked(QListWidgetItem*))))
             std::terminate();
@@ -20,7 +23,23 @@ namespace RPS::Application
     MainWindow::~MainWindow()
     {
         delete _ui;
-        delete _networkManager;
+    }
+
+    void MainWindow::UpdateWindow() noexcept
+    {
+        std::vector<Array<double>> arrays = _api.GetArrays();
+        _ui->ArrayList->clear();
+        _arrays.clear();
+
+        for (const auto& stringArray : arrays)
+        {
+            QString array = ExtendedCpp::LINQ::From(stringArray.inner_array)
+                    .Select([](double number){ return std::to_string(number); })
+                    .Aggregate<std::string>([](std::string result, const std::string& array)
+                                            { result += array; return result; }).c_str();
+
+            // TODO add item
+        }
     }
 
     void MainWindow::ListWidgetItemClicked(QListWidgetItem* arrayItem) noexcept
@@ -30,7 +49,9 @@ namespace RPS::Application
                      [this, arrayItem](const QString& arrayText){ UpdateItem(arrayText, _ui->ArrayList->row(arrayItem)); }))
             std::terminate();
         if (!connect(editArrayWindow, &EditArrayWindow::SortClicked, this,
-                     [this, arrayItem](const QString& arrayText){ UpdateItem(arrayText, _ui->ArrayList->row(arrayItem));}))
+                     [this, arrayItem](const QString& arrayText)
+                     { UpdateItem(arrayText, _ui->ArrayList->row(arrayItem));
+                       SortArray(_ui->ArrayList->row(arrayItem)); }))
             std::terminate();
         editArrayWindow->show();
     }
@@ -43,7 +64,7 @@ namespace RPS::Application
         addArrayWindow->show();
     }
 
-    void MainWindow::UpdateItem(const QString &arrayText, int row) noexcept
+    void MainWindow::UpdateItem(const QString &arrayText, const int row) noexcept
     {
         if (arrayText.isEmpty())
         {
@@ -65,7 +86,7 @@ namespace RPS::Application
         _ui->ArrayList->item(_ui->ArrayList->count() - 1)->setFont(font);
     }
 
-    void MainWindow::SortArray() noexcept
+    void MainWindow::SortArray([[maybe_unused]] const int row) noexcept
     {
 
     }

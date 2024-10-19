@@ -42,8 +42,9 @@ namespace RPS::Application
             Utility::IsNumberArray(Utility::SplitString(_ui->ArrayEdit->toPlainText().toStdString())))
         {
             emit SortClicked(_ui->ArrayEdit->toPlainText());
-            this->setEnabled(false);
         }
+
+        this->close();
     }
 
     void EditArrayWindow::DeleteButtonClicked() noexcept

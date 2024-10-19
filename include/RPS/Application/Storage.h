@@ -14,13 +14,14 @@ namespace RPS::Application
         std::map<std::string, std::string> _storage;
 
     public:
-        typedef std::shared_ptr<Storage> Ptr;
-
         explicit Storage(const std::string& fileName);
-        std::string Variable(const std::string& key);
+        [[nodiscard]]
+        std::string Variable(const std::string& key) const;
 
-        std::string Host();
-        std::uint16_t Port();
+        [[nodiscard]]
+        std::string Host() const;
+        [[nodiscard]]
+        std::uint16_t Port() const;
     };
 }
 

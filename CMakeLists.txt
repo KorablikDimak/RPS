@@ -48,14 +48,19 @@ set(Application_INCLUDES
         include/RPS/Application/Utility.h
         include/RPS/Application/MainWindow.h
         include/RPS/Application/EditArrayWindow.h
-        include/RPS/Application/AddArrayWindow.h)
+        include/RPS/Application/AddArrayWindow.h
+        include/RPS/Application/Array.h
+        src/Application/Api.cpp
+        include/RPS/Application/Api.h)
 
 set(Application_SOURCE
         src/Application/main.cpp
         src/Application/MainWindow.cpp
         src/Application/EditArrayWindow.cpp
         src/Application/Utility.cpp
-        src/Application/AddArrayWindow.cpp)
+        src/Application/AddArrayWindow.cpp
+        src/Application/Api.cpp
+        include/RPS/Application/Api.h)
 
 set(Application_UI
         src/Application/MainWindow.ui

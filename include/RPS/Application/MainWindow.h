@@ -3,7 +3,9 @@
 
 #include <QWidget>
 #include <QListWidgetItem>
-#include <QtNetwork/QNetworkAccessManager>
+
+#include "Api.h"
+#include "Array.h"
 
 namespace RPS::Application
 {
@@ -19,20 +21,22 @@ namespace RPS::Application
     Q_OBJECT
 
     public:
-        explicit MainWindow(QWidget* parent = nullptr) noexcept;
+        explicit MainWindow(const Api& api, QWidget* parent = nullptr) noexcept;
         ~MainWindow() override;
 
     private:
         Ui::MainWindow* _ui;
-        QNetworkAccessManager* _networkManager;
-        std::map<int, std::int64_t> mappedId;
+        Api _api;
+        std::map<int, Array<double>> _arrays;
+
+        void UpdateWindow() noexcept;
 
     private slots:
         void ListWidgetItemClicked(QListWidgetItem* arrayItem) noexcept;
         void AddArrayButtonClicked() noexcept;
         void UpdateItem(const QString& arrayText, int row) noexcept;
         void AddNewItem(const QString& arrayText) noexcept;
-        void SortArray() noexcept;
+        void SortArray(int row) noexcept;
     };
 }
 
