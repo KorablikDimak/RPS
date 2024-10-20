@@ -5,12 +5,24 @@
 #include <sstream>
 
 #include <ExtendedCpp/Json.h>
+#ifdef __APPLE__
+    #include <mach-o/dyld.h>
+#endif
 
 #include "Storage.h"
 
 RPS::WebApi::Storage::Storage(const std::string& fileName)
 {
+#ifdef __APPLE__
+    char buffer [PATH_MAX];
+    uint32_t buffersize = PATH_MAX;
+    if(!_NSGetExecutablePath(buffer, &buffersize))
+        puts(buffer);
+    std::filesystem::path executionPath((std::string(buffer)));
+    std::filesystem::path path(executionPath.parent_path().string() + "/" + std::string(fileName));
+#else
     std::filesystem::path path(fileName);
+#endif
 
     if (!exists(path))
         throw std::invalid_argument(std::format("File {} does not exist.", path.string()));
