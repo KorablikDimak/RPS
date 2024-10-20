@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>572</width>
-    <height>130</height>
+    <height>188</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -55,9 +55,9 @@
   <widget class="QPushButton" name="CancelButton">
    <property name="geometry">
     <rect>
-     <x>430</x>
-     <y>70</y>
-     <width>131</width>
+     <x>10</x>
+     <y>130</y>
+     <width>121</width>
      <height>51</height>
     </rect>
    </property>
@@ -91,9 +91,9 @@
   <widget class="QPushButton" name="DeleteButton">
    <property name="geometry">
     <rect>
-     <x>290</x>
-     <y>70</y>
-     <width>131</width>
+     <x>140</x>
+     <y>130</y>
+     <width>141</width>
      <height>51</height>
     </rect>
    </property>
@@ -119,6 +119,24 @@
     <font>
      <pointsize>14</pointsize>
     </font>
+   </property>
+  </widget>
+  <widget class="QLabel" name="ErrorLabel">
+   <property name="geometry">
+    <rect>
+     <x>300</x>
+     <y>80</y>
+     <width>241</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Некорректный формат массива</string>
    </property>
   </widget>
  </widget>

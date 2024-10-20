@@ -85,6 +85,27 @@
     </font>
    </property>
   </widget>
+  <widget class="QLabel" name="ErrorLabel">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>70</y>
+     <width>211</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Некорректный формат массива</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

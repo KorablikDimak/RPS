@@ -14,6 +14,11 @@ namespace RPS::Application
     {
         _ui->setupUi(this);
 
+        QPalette redText;
+        redText.setColor(QPalette::WindowText, Qt::red);
+        _ui->ErrorLabel->setPalette(redText);
+        _ui->ErrorLabel->setVisible(false);
+
         std::ostringstream stream;
         for (const auto number : _array.inner_array)
             stream << number << " ";
@@ -49,6 +54,10 @@ namespace RPS::Application
             emit Updated();
             this->close();
         }
+        else
+        {
+            _ui->ErrorLabel->setVisible(true);
+        }
     }
 
     void EditArrayWindow::CancelButtonClicked() noexcept
@@ -61,6 +70,7 @@ namespace RPS::Application
         if (!_ui->ArrayEdit->text().isEmpty() &&
             Utility::IsNumberArray(Utility::SplitString(_ui->ArrayEdit->text().toStdString())))
         {
+            _ui->ErrorLabel->setVisible(false);
             _array.inner_array = Utility::ParseArray(Utility::SplitString(_ui->ArrayEdit->text().toStdString()));
             _array = _repository->Sort(_array);
             std::ostringstream stream;
@@ -68,6 +78,10 @@ namespace RPS::Application
                 stream << number << " ";
             _ui->ArrayEdit->setText(stream.str().c_str());
             emit Updated();
+        }
+        else
+        {
+            _ui->ErrorLabel->setVisible(true);
         }
     }
 

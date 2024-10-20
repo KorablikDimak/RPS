@@ -11,6 +11,12 @@ namespace RPS::Application
             QDialog(parent), _ui(new Ui::AddArrayWindow), _repository(repository)
     {
         _ui->setupUi(this);
+
+        QPalette redText;
+        redText.setColor(QPalette::WindowText, Qt::red);
+        _ui->ErrorLabel->setPalette(redText);
+        _ui->ErrorLabel->setVisible(false);
+
         if (!connect(_ui->SaveButton, &QPushButton::clicked, this, &AddArrayWindow::SaveButtonClicked))
             std::terminate();
         if (!connect(_ui->CancelButton, &QPushButton::clicked, this, &AddArrayWindow::CancelButtonClicked))
@@ -32,6 +38,10 @@ namespace RPS::Application
             _repository->Add(array);
             emit Updated();
             this->close();
+        }
+        else
+        {
+            _ui->ErrorLabel->setVisible(true);
         }
     }
 
