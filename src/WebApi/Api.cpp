@@ -21,7 +21,7 @@ RPS::WebApi::Api::Api(const ExtendedCpp::DI::ServiceProvider& serverProvider)
         {
             const auto json = ExtendedCpp::Json::parse(request.body().toStdString());
             const auto array = json.get<DbArray<double>>();
-            serverProvider.GetServiceRequired<DataContext>()->Add(array);
+            serverProvider.GetServiceRequired<DataContext>()->Add(array).wait();
             return QHttpServerResponse(QHttpServerResponder::StatusCode::Ok);
         }
         catch (const ExtendedCpp::Json::parse_error& ex)
@@ -36,7 +36,7 @@ RPS::WebApi::Api::Api(const ExtendedCpp::DI::ServiceProvider& serverProvider)
         {
             const auto json = ExtendedCpp::Json::parse(request.body().toStdString());
             const auto array = json.get<DbArray<double>>();
-            serverProvider.GetServiceRequired<DataContext>()->Update(array);
+            serverProvider.GetServiceRequired<DataContext>()->Update(array).wait();
             return QHttpServerResponse(QHttpServerResponder::StatusCode::Ok);
         }
         catch (const ExtendedCpp::Json::parse_error& ex)
@@ -51,7 +51,7 @@ RPS::WebApi::Api::Api(const ExtendedCpp::DI::ServiceProvider& serverProvider)
         {
             const auto json = ExtendedCpp::Json::parse(request.body().toStdString());
             const auto array = json.get<DbArray<double>>();
-            serverProvider.GetServiceRequired<DataContext>()->Delete(array);
+            serverProvider.GetServiceRequired<DataContext>()->Delete(array).wait();
             return QHttpServerResponse(QHttpServerResponder::StatusCode::Ok);
         }
         catch (const ExtendedCpp::Json::parse_error& ex)
@@ -72,9 +72,9 @@ RPS::WebApi::Api::Api(const ExtendedCpp::DI::ServiceProvider& serverProvider)
 
             auto optArray = serverProvider.GetServiceRequired<DataContext>()->Get(array.id).get();
             if (optArray.has_value())
-                serverProvider.GetServiceRequired<DataContext>()->Update(array);
+                serverProvider.GetServiceRequired<DataContext>()->Update(array).wait();
             else
-                serverProvider.GetServiceRequired<DataContext>()->Add(array);
+                serverProvider.GetServiceRequired<DataContext>()->Add(array).wait();
 
             const ExtendedCpp::Json responseData = array;
             return QHttpServerResponse(QString(responseData.dump().c_str()), QHttpServerResponder::StatusCode::Ok);
