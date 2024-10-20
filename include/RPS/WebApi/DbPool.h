@@ -13,8 +13,7 @@ namespace RPS::WebApi
     private:
         std::string _connectionString;
         unsigned char _poolSize;
-        unsigned char _activeConnection;
-        std::queue<pqxx::connection> _connections;
+        std::queue<std::unique_ptr<pqxx::connection>> _connections;
         mutable std::mutex _queueConnectionMutex;
 
     public:
@@ -23,10 +22,8 @@ namespace RPS::WebApi
         explicit DbPool(const std::string& connectionString, unsigned char poolSize) noexcept;
         explicit DbPool(std::string&& connectionString, unsigned char poolSize) noexcept;
 
-        [[nodiscard]]
-        bool IsEmpty() const noexcept;
-        pqxx::connection GetConnection() noexcept;
-        void ReturnInPool(pqxx::connection&& connection) noexcept;
+        std::unique_ptr<pqxx::connection> GetConnection() noexcept;
+        void ReturnInPool(std::unique_ptr<pqxx::connection>&& connection) noexcept;
     };
 }
 

@@ -27,8 +27,11 @@ namespace RPS::WebApi
         {
             return std::async(std::launch::async, [this](TTransaction&& transaction, auto&&... args)->TResult
             {
-                pqxx::connection connection = _pool->GetConnection();
-                pqxx::work work{connection};
+                std::unique_ptr<pqxx::connection> connection{ nullptr };
+                while (!connection)
+                    connection = _pool->GetConnection();
+
+                pqxx::work work(*connection);
                 TResult result = transaction(work, std::forward<TParams>(args)...);
                 work.commit();
                 _pool->ReturnInPool(std::move(connection));
@@ -42,8 +45,11 @@ namespace RPS::WebApi
         {
             return std::async(std::launch::async, [this](TTransaction&& transaction, auto&&... args)
             {
-                pqxx::connection connection = _pool->GetConnection();
-                pqxx::work work{connection};
+                std::unique_ptr<pqxx::connection> connection{ nullptr };
+                while (!connection)
+                    connection =  _pool->GetConnection();
+
+                pqxx::work work(*connection);
                 transaction(work, std::forward<TParams>(args)...);
                 work.commit();
                 _pool->ReturnInPool(std::move(connection));

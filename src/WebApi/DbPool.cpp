@@ -6,49 +6,32 @@ RPS::WebApi::DbPool::DbPool(const std::string& connectionString, const unsigned 
 {
     _connectionString = connectionString;
     _poolSize = pollSize;
-    _activeConnection = 0;
+
+    for (unsigned char i = 0; i < _poolSize; ++i)
+        _connections.push(std::make_unique<pqxx::connection>(_connectionString));
 }
 
 RPS::WebApi::DbPool::DbPool(std::string&& connectionString, const unsigned char pollSize) noexcept
 {
     _connectionString = std::move(connectionString);
     _poolSize = pollSize;
-    _activeConnection = 0;
+
+    for (unsigned char i = 0; i < _poolSize; ++i)
+        _connections.push(std::make_unique<pqxx::connection>(_connectionString));
 }
 
-bool RPS::WebApi::DbPool::IsEmpty() const noexcept
+std::unique_ptr<pqxx::connection> RPS::WebApi::DbPool::GetConnection() noexcept
 {
-    return _connections.empty();
-}
-
-pqxx::connection RPS::WebApi::DbPool::GetConnection() noexcept
-{
-    while (true)
-    {
-        std::unique_lock lock(_queueConnectionMutex);
-        if (_activeConnection < _poolSize) break;
-        lock.unlock();
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    }
-
     std::lock_guard lock(_queueConnectionMutex);
-
-    if (_connections.empty() && _activeConnection < _poolSize)
-        _connections.emplace(_connectionString);
-
-    ++_activeConnection;
-    pqxx::connection connection = std::move(_connections.front());
+    if (_connections.empty())
+        return { nullptr };
+    std::unique_ptr<pqxx::connection> connection = std::move(_connections.front());
     _connections.pop();
     return connection;
 }
 
-void RPS::WebApi::DbPool::ReturnInPool(pqxx::connection&& connection) noexcept
+void RPS::WebApi::DbPool::ReturnInPool(std::unique_ptr<pqxx::connection>&& connection) noexcept
 {
     std::lock_guard lock(_queueConnectionMutex);
-
-    if (_activeConnection > 0)
-    {
-        --_activeConnection;
-        _connections.push(std::move(connection));
-    }
+    _connections.push(std::move(connection));
 }
