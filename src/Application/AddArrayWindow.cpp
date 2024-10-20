@@ -31,9 +31,8 @@ namespace RPS::Application
             array.inner_array = Utility::ParseArray(Utility::SplitString(_ui->ArrayEdit->text().toStdString()));
             _repository->Add(array);
             emit Updated();
+            this->close();
         }
-
-        this->close();
     }
 
     void AddArrayWindow::CancelButtonClicked() noexcept

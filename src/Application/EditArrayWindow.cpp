@@ -40,15 +40,15 @@ namespace RPS::Application
         {
             _repository->Delete(_array);
             emit Updated();
+            this->close();
         }
         else if (Utility::IsNumberArray(Utility::SplitString(_ui->ArrayEdit->text().toStdString())))
         {
             _array.inner_array = Utility::ParseArray(Utility::SplitString(_ui->ArrayEdit->text().toStdString()));
             _repository->Update(_array);
             emit Updated();
+            this->close();
         }
-
-        this->close();
     }
 
     void EditArrayWindow::CancelButtonClicked() noexcept
