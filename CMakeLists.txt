@@ -6,10 +6,13 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include(cmake/utils.cmake)
+
 if(APPLE)
-    option(DEPLOY_QT "Deploy qt executables" OFF)
+    option(DEPLOY_APPLICATION "Deploy Application executable" OFF)
 elseif(WIN32)
-    option(DEPLOY_QT "Deploy qt executables" ON)
+    option(DEPLOY_WEBAPI "Deploy WebApi executable" ON)
+    option(DEPLOY_APPLICATION "Deploy Application executable" ON)
 endif()
 option(BUILD_TESTS "Build test" ON)
 
@@ -18,8 +21,6 @@ find_package(libpqxx REQUIRED)
 find_package(GTest REQUIRED)
 find_package(Qt6 REQUIRED COMPONENTS Core HttpServer Widgets Network)
 qt_standard_project_setup()
-
-include(cmake/utils.cmake)
 
 set(WebApi_INCLUDES
         include/RPS/WebApi/Api.h
@@ -41,8 +42,11 @@ set(WebApi_SOURCE
 qt_add_executable(WebApi ${WebApi_INCLUDES} ${WebApi_SOURCE})
 target_link_libraries(WebApi PRIVATE Qt6::HttpServer libpqxx::pqxx ExtendedCpp::LINQ ExtendedCpp::Json ExtendedCpp::DI)
 target_add_content(WebApi settings.json)
-if(APPLE)
-    target_link_options(WebApi PRIVATE -framework CoreFoundation)
+target_include_directories(WebApi PRIVATE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/WebApi>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/WebApi>)
+if(DEPLOY_WEBAPI)
+    deploy_qt(WebApi)
 endif()
 
 set(Application_INCLUDES
@@ -67,17 +71,19 @@ set(Application_UI
         src/Application/EditArrayWindow.ui
         src/Application/AddArrayWindow.ui)
 
-qt_add_executable(Application ${Application_INCLUDES} ${Application_SOURCE} ${Application_UI})
+if(APPLE)
+    qt_add_executable(Application MACOSX_BUNDLE ${Application_INCLUDES} ${Application_SOURCE} ${Application_UI})
+    target_link_options(WebApi PRIVATE -framework CoreFoundation)
+elseif(WIN32)
+    qt_add_executable(Application WIN32_EXECUTABLE ${Application_INCLUDES} ${Application_SOURCE} ${Application_UI})
+endif()
 target_link_libraries(Application PRIVATE Qt6::Widgets Qt6::Network ExtendedCpp::LINQ ExtendedCpp::Json)
 target_add_content(Application settings.json)
-if(APPLE)
-    target_link_options(WebApi PRIVATE -framework CoreFoundation)
-endif()
-
-set_private_include_directories(WebApi Application)
-set_platform_properties(WebApi Application)
-if(DEPLOY_QT)
-    deploy_qt(WebApi Application)
+target_include_directories(Application PRIVATE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/Application>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/Application>)
+if(DEPLOY_APPLICATION)
+    deploy_qt(Application)
 endif()
 
 if(BUILD_TESTS)
@@ -101,18 +107,10 @@ if(BUILD_TESTS)
 
     add_executable(Tests ${TESTS_INCLUDES} ${TESTS_SOURCE})
     target_link_libraries(Tests PRIVATE libpqxx::pqxx ExtendedCpp::LINQ ExtendedCpp::Common GTest::gtest GTest::gtest_main)
+    target_add_content(Tests settings.json)
     target_include_directories(Tests PRIVATE
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/tests>
             $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/tests>
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/WebApi>
             $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/WebApi>)
-    if(APPLE)
-        target_link_options(Tests PRIVATE -framework CoreFoundation)
-    endif()
-
-    add_custom_command(
-            TARGET Tests POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy
-            ${CMAKE_CURRENT_SOURCE_DIR}/settings.json
-            ${CMAKE_CURRENT_BINARY_DIR}/settings.json)
 endif()
