@@ -106,7 +106,7 @@
     <string>Удалить</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit">
+  <widget class="QLineEdit" name="ArrayEdit">
    <property name="geometry">
     <rect>
      <x>90</x>
