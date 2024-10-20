@@ -24,11 +24,11 @@ namespace RPS::Application
 
     void AddArrayWindow::SaveButtonClicked() noexcept
     {
-        if (!_ui->ArrayEdit->toPlainText().isEmpty() &&
-            Utility::IsNumberArray(Utility::SplitString(_ui->ArrayEdit->toPlainText().toStdString())))
+        if (!_ui->ArrayEdit->text().isEmpty() &&
+            Utility::IsNumberArray(Utility::SplitString(_ui->ArrayEdit->text().toStdString())))
         {
             Array<double> array;
-            array.inner_array = Utility::ParseArray(Utility::SplitString(_ui->ArrayEdit->toPlainText().toStdString()));
+            array.inner_array = Utility::ParseArray(Utility::SplitString(_ui->ArrayEdit->text().toStdString()));
             _repository->Add(array);
             emit Updated();
         }

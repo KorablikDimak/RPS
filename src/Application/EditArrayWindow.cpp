@@ -17,7 +17,7 @@ namespace RPS::Application
         std::ostringstream stream;
         for (const auto number : _array.inner_array)
             stream << number << " ";
-        _ui->ArrayEdit->setPlainText(stream.str().c_str());
+        _ui->ArrayEdit->setText(stream.str().c_str());
 
         if (!connect(_ui->SaveButton, &QPushButton::clicked, this, &EditArrayWindow::SaveButtonClicked))
             std::terminate();
@@ -36,14 +36,14 @@ namespace RPS::Application
 
     void EditArrayWindow::SaveButtonClicked() noexcept
     {
-        if (_ui->ArrayEdit->toPlainText().isEmpty())
+        if (_ui->ArrayEdit->text().isEmpty())
         {
             _repository->Delete(_array);
             emit Updated();
         }
-        else if (Utility::IsNumberArray(Utility::SplitString(_ui->ArrayEdit->toPlainText().toStdString())))
+        else if (Utility::IsNumberArray(Utility::SplitString(_ui->ArrayEdit->text().toStdString())))
         {
-            _array.inner_array = Utility::ParseArray(Utility::SplitString(_ui->ArrayEdit->toPlainText().toStdString()));
+            _array.inner_array = Utility::ParseArray(Utility::SplitString(_ui->ArrayEdit->text().toStdString()));
             _repository->Update(_array);
             emit Updated();
         }
@@ -58,15 +58,15 @@ namespace RPS::Application
 
     void EditArrayWindow::SortButtonClicked() noexcept
     {
-        if (!_ui->ArrayEdit->toPlainText().isEmpty() &&
-            Utility::IsNumberArray(Utility::SplitString(_ui->ArrayEdit->toPlainText().toStdString())))
+        if (!_ui->ArrayEdit->text().isEmpty() &&
+            Utility::IsNumberArray(Utility::SplitString(_ui->ArrayEdit->text().toStdString())))
         {
-            _array.inner_array = Utility::ParseArray(Utility::SplitString(_ui->ArrayEdit->toPlainText().toStdString()));
+            _array.inner_array = Utility::ParseArray(Utility::SplitString(_ui->ArrayEdit->text().toStdString()));
             _array = _repository->Sort(_array);
             std::ostringstream stream;
             for (const auto number : _array.inner_array)
                 stream << number << " ";
-            _ui->ArrayEdit->setPlainText(stream.str().c_str());
+            _ui->ArrayEdit->setText(stream.str().c_str());
             emit Updated();
         }
     }
